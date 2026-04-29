@@ -8,6 +8,8 @@ public class scene01event : MonoBehaviour
     public GameObject harlen;
     public GameObject seta;
     public GameObject textBox;
+    [SerializeField] AudioSource breath;
+    [SerializeField] AudioSource closedoor;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,8 +24,10 @@ public class scene01event : MonoBehaviour
         yield return new WaitForSeconds(2);
         //文本功能
         textBox.SetActive(true);
+        breath.Play();
         yield return new WaitForSeconds(2);
         seta.SetActive(true);
+        closedoor.Play();
 
     }
 }
