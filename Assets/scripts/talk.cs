@@ -81,11 +81,7 @@ public class talk : MonoBehaviour
                SpriteRight.sprite = sprite;
            }
        }
-       else if (!string.IsNullOrEmpty(_name))
-       {
-           Debug.LogError($"找不到角色图像的字典键：[{_name}]，字符串长度：{_name.Length}。请检查CSV文件里该名字前后是否有特殊符号或错别字。");
-       }
-     }
+      }
      public void ReadText(TextAsset _textAsset)
      {
         dialogRows = _textAsset.text.Split('\n');
