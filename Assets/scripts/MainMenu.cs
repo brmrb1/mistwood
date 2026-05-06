@@ -1,0 +1,22 @@
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class MainMenu : MonoBehaviour
+{
+    [Header("要跳转的目标场景名称")]
+    public string sceneToLoad = "Scene01"; // 默认填入你的游戏场景名字
+
+    // 这个方法用来绑定给“开始按钮”的 OnClick 事件
+    public void StartGame()
+    {
+        // 也可以直接传入数字索引：SceneManager.LoadScene(1);
+        SceneManager.LoadScene(sceneToLoad);
+    }
+
+    // 退出游戏的方法（如果你的主界面也有退出按钮的话可以绑定这个）
+    public void QuitGame()
+    {
+        Debug.Log("退出游戏");
+        Application.Quit();
+    }
+}

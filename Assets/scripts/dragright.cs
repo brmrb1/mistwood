@@ -127,9 +127,10 @@ public class dragright : MonoBehaviour
                     // 不再强制挂载到 spawnPoint 下，避免本地坐标和缩放问题，直接在世界坐标系下生成
                     GameObject newlySpawned = Instantiate(prefabToSpawn, spawnPoint.position, spawnPoint.rotation);
                     
-                    // 完全使用 spawnPoint（生成点）的真实位置，不再强行修改 Z 轴
+                    // 使用 spawnPoint（生成点）的真实位置，但将Z轴和当前被拖拽的物体保持一致，防止跑到不正确的前后层级
                     Vector3 newPos = spawnPoint.position;
-                    // ... 修复上一步替换，由于对象变了，用 newlySpawned
+                    newPos.z = transform.position.z;
+                    // 重新赋值给新生成的物体
                     newlySpawned.transform.position = newPos;
                     
                     // 强制设为你指定的固定大小，这样你在面板里填多少，它生出来就是多大！
