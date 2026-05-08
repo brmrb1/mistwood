@@ -18,9 +18,14 @@ public class talk : MonoBehaviour
     //对话内容文本
     public TMP_Text DialogText;
     //角色图片列表
+    // 原本只能装两张图，建议把所有的立绘（不同角色的所有表情差分图）都拖到这个 List 里
     public List<Sprite> sprites = new List<Sprite>();
-    //角色名字对应图片的字典
+    // 原本用来存名字对应的单一图片，现在废弃
+    // Dictionary<string, Sprite> imageDic = new Dictionary<string, Sprite>();
+    
+    // 【新增】根据差分名字存图片的字典。例如把 "舒悦杉_开心", "莉莉白_生气" 这些名字作为键
     Dictionary<string, Sprite> imageDic = new Dictionary<string, Sprite>();
+
     //当前对话索引
     public int dialogIndex;
     //对话文本，按行分割
@@ -39,8 +44,16 @@ public class talk : MonoBehaviour
     public List<Person> people = new List<Person>();
     private void Awake()
     {
-        imageDic["舒悦杉"] = sprites[0];
-        imageDic["莉莉白"] = sprites[1];
+        // 自动用 sprite 的原本名称作为键存入字典，要求：面板中拖进去的 Sprite 名字就是差分名字。
+        // 例如："舒悦杉", "舒悦杉_笑", "莉莉白", "莉莉白_哭"
+        for (int i = 0; i < sprites.Count; i++)
+        {
+            if (sprites[i] != null)
+            {
+                imageDic[sprites[i].name] = sprites[i];
+            }
+        }
+        
         Person person = new Person();
         person.name = "舒悦杉";
         people.Add(person);
@@ -92,9 +105,10 @@ public class talk : MonoBehaviour
                 if (int.TryParse(cells[1].Trim(), out int rId))
                 {
                     bool matchChapter = true; // 默认匹配，用于兼容旧的没有章节栏的行
-                    if (cells.Length > 8 && !string.IsNullOrWhiteSpace(cells[8]))
+                    // 章节ID挪到了更后面一列(原为cells[8], 现在是cells[9] 如果有的话)
+                    if (cells.Length > 9 && !string.IsNullOrWhiteSpace(cells[9]))
                     {
-                        if (int.TryParse(cells[8].Trim(), out int chapterId))
+                        if (int.TryParse(cells[9].Trim(), out int chapterId))
                         {
                             matchChapter = (chapterId == currentChapter);
                         }
@@ -139,13 +153,18 @@ public class talk : MonoBehaviour
     
     }
     //更新角色图像
-    public void UpdateImage(string _name, string _position)
+    // _name 仍然用于名字框展示，_emotionName 用于在字典里查找差分立绘
+    public void UpdateImage(string _name, string _position, string _emotionName = "")
     {
        // 清理所有可能的隐藏字符：空格、换行、制表、还有最容易导致这个错误的 BOM 和 零宽空格 
        _name = _name.Trim(' ', '\r', '\n', '\t', '\uFEFF', '\u200B');
        _position = _position.Trim(' ', '\r', '\n', '\t', '\uFEFF', '\u200B');
+       _emotionName = _emotionName.Trim(' ', '\r', '\n', '\t', '\uFEFF', '\u200B');
 
-       if (imageDic.TryGetValue(_name, out Sprite sprite))
+       // 如果传入了差分名，优先使用差分名；如果没有，退回使用默认名字
+       string keyToSearch = string.IsNullOrEmpty(_emotionName) ? _name : _emotionName;
+
+       if (imageDic.TryGetValue(keyToSearch, out Sprite sprite))
        {
            if (_position == "左")        
            {
@@ -179,10 +198,10 @@ public class talk : MonoBehaviour
             // 防报错：如果表格里的 ID 写了空格没法转化为数字，就跳过
             if (!int.TryParse(cells[1].Trim(), out rowId)) continue; 
 
-            // 【新增】判断章节是否匹配（如果CSV中有第9列并且填了数字）
-            if (cells.Length > 8 && !string.IsNullOrWhiteSpace(cells[8]))
+            // 【新增】判断章节是否匹配（如果CSV中有第10列即 cells[9] 并且填了数字）
+            if (cells.Length > 9 && !string.IsNullOrWhiteSpace(cells[9]))
             {
-                if (int.TryParse(cells[8].Trim(), out int chapterId))
+                if (int.TryParse(cells[9].Trim(), out int chapterId))
                 {
                     // 如果这行的章节和当前设定的章节不同，则跳过不执行
                     if (chapterId != currentChapter) continue; 
@@ -198,7 +217,18 @@ public class talk : MonoBehaviour
                 if (finalOutScreen != null) finalOutScreen.SetActive(false);
 
                 UpdateText(cells[2], cells[4]);
-                UpdateImage(cells[2], cells[3]);
+
+            // 解析立绘差分名：因为在CSV中“立绘”列是第9列（也就是 cells[8]），所以读取 cells[8]
+            string emotionName = "";
+            // 原来判断章节的代码占用了 cells[8]，由于你修改了表结构，现在的立绘在 H 或 I 列
+            // 从你的截图中看：
+            // B列: 人物 (cells[2]因为 A列ID前可能有符号或空白，如果A列是cells[0], B列ID是cells[1], C列人物是cells[2], D列位置是cells[3], E列内容是cells[4], F列跳转是cells[5], G列效果是cells[6], H列目标是cells[7], I列立绘是cells[8])
+            if (cells.Length > 8 && !string.IsNullOrWhiteSpace(cells[8]))
+            {
+                emotionName = cells[8].Trim();
+            }
+                
+            UpdateImage(cells[2], cells[3], emotionName);
 
                 // 安全读取下一句的索引 (如果在表格里空着没写，就会默认 + 1)
                 int nextIndex = dialogIndex + 1;

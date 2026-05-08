@@ -12,6 +12,13 @@ public class dragright : MonoBehaviour
     [SerializeField] private Transform spawnPoint;       // 另一个生成位置
     [SerializeField] private GameObject[] resultPrefabs; // 拖拽成功生成的物体（可以放入3个不同形态的预制体）
     [SerializeField] private Vector3 customSpawnScale = new Vector3(1f, 1f, 1f); // 如果生成出来太大/太小，直接调节这里！
+
+    [Header("成功动画")]
+    [SerializeField] private Animator successAnimator;   // 拖动到目标位置成功时播放动画的Animator组件
+    [SerializeField] private string successTriggerName = "Play"; // 动画触发器的名称
+    [SerializeField] private float animationDuration = 1.0f; // 【新增】动画时长，等待该时间后再消失/生成新图
+    
+    private bool isAnimating = false; // 是否在播放动画中，防止多次拖拽
     
     // 【修改】使用静态字典按“生成位置(spawnPoint)”来独立记录图片和状态
     // 只有拖到“同一个位置”的物品才会相互排斥和顶替
@@ -22,6 +29,36 @@ public class dragright : MonoBehaviour
     public static Dictionary<Transform, dragright> GetCurrentPlacements()
     {
         return lastDragDict;
+    }
+
+    // 【新增】维护一个全局注册表，便于一次性重置所有拖拽物
+    private static List<dragright> allDragrights = new List<dragright>();
+
+    private void OnEnable()
+    {
+        if (!allDragrights.Contains(this)) allDragrights.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        if (allDragrights.Contains(this)) allDragrights.Remove(this);
+    }
+
+    // 【新增】当点击反馈图时，希望把所有拖拽图片恢复到初始状态
+    public static void ResetAllToInitial()
+    {
+        // 把场上注册的所有 dragright 都重置
+        foreach (var d in allDragrights)
+        {
+            if (d != null)
+            {
+                d.ResetProgress();
+            }
+        }
+
+        // 清空本脚本维护的占位字典信息，保证下一次可以重新占位
+        lastDragDict.Clear();
+        spawnedObjsDict.Clear();
     }
 
     // 【新增多轮机制】每轮结束后，清空本轮判定记忆。这样旧的图片就会留在原地变成“历史”。
@@ -74,6 +111,9 @@ public class dragright : MonoBehaviour
     // 拖拽过程
     private void OnMouseDrag()
     {
+        // 正在播放成功动画时，不允许继续拖拽
+        if (isAnimating) return;
+
         // 只要还没成功3次就可以拖拽
         if (successCount < 3)
         {
@@ -85,7 +125,7 @@ public class dragright : MonoBehaviour
     // 鼠标松开时判定
     private void OnMouseUp()
     {
-        if (successCount >= 3 || correctTrans == null) return;
+        if (isAnimating || successCount >= 3 || correctTrans == null) return;
 
         // 计算当前位置和目标位置的距离（忽略Z轴）
         float distance = Vector2.Distance(transform.position, correctTrans.position);
@@ -94,8 +134,43 @@ public class dragright : MonoBehaviour
         {
             // --- 拖到了指定位置 ---
 
-            // 【新增逻辑】只对“同一个目标生成点”起效的独立互斥判断
-            if (spawnPoint != null)
+            // 【修改】如果配置了成功动画，则开始协程播放动画并延迟执行
+            if (successAnimator != null && !string.IsNullOrEmpty(successTriggerName))
+            {
+                // 吸附到目标位置并开始延迟逻辑
+                transform.position = new Vector3(correctTrans.position.x, correctTrans.position.y, transform.position.z);
+                StartCoroutine(PlayAnimationAndFinish());
+            }
+            else
+            {
+                FinishSuccessLogic();
+            }
+        }
+        else
+        {
+            // --- 没拖到指定位置，直接回到原位 ---
+            transform.position = startPos;
+        }
+    }
+
+    // 新增：播放动画并延迟生效的协程
+    private IEnumerator PlayAnimationAndFinish()
+    {
+        isAnimating = true;
+        successAnimator.SetTrigger(successTriggerName);
+        
+        // 等待设定的动画时长
+        yield return new WaitForSeconds(animationDuration);
+        
+        FinishSuccessLogic();
+        isAnimating = false;
+    }
+
+    // 分离出来的原本处理替换贴图和消失逻辑的方法
+    private void FinishSuccessLogic()
+    {
+        // 【新增逻辑】只对“同一个目标生成点”起效的独立互斥判断
+        if (spawnPoint != null)
             {
                 // 检查同一个坑位上，之前是不是有别人拖成功过了
                 if (lastDragDict.ContainsKey(spawnPoint))
@@ -136,6 +211,10 @@ public class dragright : MonoBehaviour
                     // 强制设为你指定的固定大小，这样你在面板里填多少，它生出来就是多大！
                     newlySpawned.transform.localScale = customSpawnScale;
 
+                    // 【新增：使其可点击】为实例生成的图片添加点击组件，并传给它当前这个拖拽物体
+                    FeedbackClickable clickable = newlySpawned.AddComponent<FeedbackClickable>();
+                    clickable.ownerDragright = this;
+
                     // 把新生成的物品登记记录在这个坑位上
                     spawnedObjsDict[spawnPoint] = newlySpawned;
                     
@@ -172,12 +251,6 @@ public class dragright : MonoBehaviour
                     spriteRenderer.color = c;
                 }
             }
-        }
-        else
-        {
-            // --- 没拖到指定位置，直接回到原位 ---
-            transform.position = startPos;
-        }
     }
 
     // 【新增方法】重置该图片的进度和颜色
@@ -192,6 +265,29 @@ public class dragright : MonoBehaviour
         // 关键：确保如果它之前因为3次成功被隐藏了，现在把它重新显示出来，并放回原位
         transform.position = startPos;
         gameObject.SetActive(true);
+    }
+
+    // 【新增方法】清空在目标点生成的物体并重置拖拽物体
+    public void ClearSpawnedAndReset()
+    {
+        // 如果在目标点生成了图（即拖拽成功后实例化出的图片），这里进行销毁
+        if (spawnPoint != null && spawnedObjsDict.ContainsKey(spawnPoint))
+        {
+            if (spawnedObjsDict[spawnPoint] != null)
+            {
+                Destroy(spawnedObjsDict[spawnPoint]);
+            }
+            spawnedObjsDict.Remove(spawnPoint);
+            
+            // 同时将本被拖拽图从占据字典中移除
+            if (lastDragDict.ContainsKey(spawnPoint) && lastDragDict[spawnPoint] == this)
+            {
+                lastDragDict.Remove(spawnPoint);
+            }
+        }
+        
+        // 恢复拖拽图片的初始状态（回到起点、恢复次数、恢复颜色并将自身激活）
+        ResetProgress();
     }
 
     // 【新增可视化】在 Unity 编辑器里画一个圈，让你能直观看到判定的范围有多大！
