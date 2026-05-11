@@ -41,8 +41,12 @@ public class PuzzleChecker : MonoBehaviour
     [Header("新增：数字文字的生成位置与下移量")]
     public Transform textSpawnPos1;
     public Transform textSpawnPos2;
-    [Tooltip("UI文字因为在Canvas里，通常下移数值需要比世界坐标大很多，比如Y设为 -50")]
+    [Tooltip("UI文字由于通常挂在UI层，如果需要单独往下偏移可以设置它，比如Y设为 -50")]
     public Vector3 textRoundOffset = new Vector3(0, -50f, 0);
+
+    [Header("新增：滑动视图内容容器")]
+    [Tooltip("如果你希望随次数增加让外框可滚动，把 Scroll View 的 Content 拖入此处")]
+    public RectTransform scrollContent;
 
     [Header("多轮机制：每轮下移设置")]
     [Tooltip("每按一次判定按钮，整体往下偏移多少？(例如Y:-2)")]
@@ -53,6 +57,12 @@ public class PuzzleChecker : MonoBehaviour
     [Header("游戏进程与UI控制")]
     public int maxAttempts = 7;           // 最大挑战次数
     private int currentAttempt = 0;       // 当前已经是第几次挑战
+    
+    // 供外部获取当前挑战次数，以便同步下移位置
+    public int GetCurrentAttempt()
+    {
+        return currentAttempt;
+    }
 
     [Tooltip("全部答对时弹出的成功CG面板")]
     public GameObject successPanel;
@@ -63,11 +73,17 @@ public class PuzzleChecker : MonoBehaviour
     private Vector3 initialFb2Pos;
     private GameObject currentFb1;
     private GameObject currentFb2;
+    private float initialContentHeight;
 
     private void Start()
     {
         if (feedbackSpawnPos1 != null) initialFb1Pos = feedbackSpawnPos1.position;
         if (feedbackSpawnPos2 != null) initialFb2Pos = feedbackSpawnPos2.position;
+        
+        if (scrollContent != null)
+        {
+            initialContentHeight = scrollContent.sizeDelta.y;
+        }
     }
 
     // 这个方法用来在 Unity 面板中绑定给 Button (OnClick) 事件
@@ -236,11 +252,24 @@ public class PuzzleChecker : MonoBehaviour
         // 根据当前挑战次数(currentAttempt)，独立计算文字该下移多少次
         Vector3 currentTextOffset = textRoundOffset * (currentAttempt - 1);
 
+        // --- 核心：如果设置了 Scroll View，自动撑开它的长度 ---
+        if (scrollContent != null)
+        {
+            // 按照下移跨度，累加出这一轮需要多长的额外滑动空间
+            float extraHeight = Mathf.Abs(textRoundOffset.y) * currentAttempt;
+            if (initialContentHeight + extraHeight > scrollContent.sizeDelta.y)
+            {
+                // 把 Content（容器）拉长，滑动条才会出现并生效
+                scrollContent.sizeDelta = new Vector2(scrollContent.sizeDelta.x, initialContentHeight + extraHeight);
+            }
+        }
+
         if (typeTextPrefab != null && textSpawnPos1 != null)
         {
-            GameObject typeTxtObj = Instantiate(typeTextPrefab, textSpawnPos1.parent);
+            // 如果指派了滚动容器，将其作为父物体；否则用普通的父物体
+            Transform targetParent = scrollContent != null ? scrollContent : textSpawnPos1.parent;
+            GameObject typeTxtObj = Instantiate(typeTextPrefab, targetParent);
             
-            // 初始位置加上额外累计偏移量
             typeTxtObj.transform.position = textSpawnPos1.position + currentTextOffset;
             typeTxtObj.transform.localScale = typeTextPrefab.transform.localScale;
             typeTxtObj.SetActive(true);
@@ -256,9 +285,9 @@ public class PuzzleChecker : MonoBehaviour
         
         if (doseTextPrefab != null && textSpawnPos2 != null)
         {
-            GameObject doseTxtObj = Instantiate(doseTextPrefab, textSpawnPos2.parent);
+            Transform targetParent = scrollContent != null ? scrollContent : textSpawnPos2.parent;
+            GameObject doseTxtObj = Instantiate(doseTextPrefab, targetParent);
             
-            // 初始位置加上额外累计偏移量
             doseTxtObj.transform.position = textSpawnPos2.position + currentTextOffset;
             doseTxtObj.transform.localScale = doseTextPrefab.transform.localScale;
             doseTxtObj.SetActive(true);

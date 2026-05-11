@@ -199,8 +199,12 @@ public class dragright : MonoBehaviour
                 GameObject prefabToSpawn = resultPrefabs[successCount - 1];
                 if (prefabToSpawn != null)
                 {
-                    // 不再强制挂载到 spawnPoint 下，避免本地坐标和缩放问题，直接在世界坐标系下生成
-                    GameObject newlySpawned = Instantiate(prefabToSpawn, spawnPoint.position, spawnPoint.rotation);
+                    // 动态查找 PuzzleChecker 获取 Content 容器，将生成的预制体设为该 Content 的子物体
+                    PuzzleChecker checker = Object.FindObjectOfType<PuzzleChecker>();
+                    Transform targetContent = (checker != null && checker.scrollContent != null) ? checker.scrollContent : spawnPoint;
+
+                    // 作为 targetContent 的子物体生成，以便跟随滑动条一起移动
+                    GameObject newlySpawned = Instantiate(prefabToSpawn, spawnPoint.position, spawnPoint.rotation, targetContent);
                     
                     // 使用 spawnPoint（生成点）的真实位置，但将Z轴和当前被拖拽的物体保持一致，防止跑到不正确的前后层级
                     Vector3 newPos = spawnPoint.position;
@@ -208,8 +212,20 @@ public class dragright : MonoBehaviour
                     // 重新赋值给新生成的物体
                     newlySpawned.transform.position = newPos;
                     
-                    // 强制设为你指定的固定大小，这样你在面板里填多少，它生出来就是多大！
-                    newlySpawned.transform.localScale = customSpawnScale;
+                    // 强制设为你指定的固定大小。由于它现在进入了 UI 画布的子层级，画布缩放会把它压得很小，这里通过除以父物体的缩放来抵消，让它在屏幕上保持你填写的真实大小！
+                    if (targetContent != null)
+                    {
+                        Vector3 parentScale = targetContent.lossyScale;
+                        newlySpawned.transform.localScale = new Vector3(
+                            customSpawnScale.x / parentScale.x,
+                            customSpawnScale.y / parentScale.y,
+                            customSpawnScale.z / parentScale.z
+                        );
+                    }
+                    else
+                    {
+                        newlySpawned.transform.localScale = customSpawnScale;
+                    }
 
                     // 【新增：使其可点击】为实例生成的图片添加点击组件，并传给它当前这个拖拽物体
                     FeedbackClickable clickable = newlySpawned.AddComponent<FeedbackClickable>();
