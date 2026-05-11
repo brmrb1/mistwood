@@ -1,0 +1,611 @@
+fileFormatVersion: 2
+guid: 8f8f32ce30c380b47b3eb4c214307c2c
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: bei 1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4336
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 274c1f634e82c984a818848d87f4c8e1
+      internalID: 2041151572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_1
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 4336
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 38ac902ed8f35a14fb6d53a4536c21ee
+      internalID: 790462924
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_2
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 4336
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cfd62a07a461d6e4db881def503e8525
+      internalID: 782531922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_3
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 4336
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9a06ea724a14da4aa322ed3f5ca5c49
+      internalID: -140336877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_4
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 4336
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a66628dd032dc14468aff375132be95f
+      internalID: 1537276301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3252
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da8f6f1b26b8d994ebb3921f2cd5a553
+      internalID: 1858796959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_6
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 3252
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f0065839cb409042bbc2dd2497c2f0b
+      internalID: 1935415231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_7
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 3252
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70cc1a3bfa260214f9dce549a872de42
+      internalID: 1049610037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_8
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 3252
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a299d469a719b084dba6d1639fccaeaa
+      internalID: -383649160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_9
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 3252
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 000b4efef5e6e7848ada7f3899726645
+      internalID: 1944325798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2168
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 26b4fa3bc92576b4aad75132a6a27922
+      internalID: 1468388830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_11
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 2168
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88bac978080584d4099981340fd192af
+      internalID: -2009508856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_12
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 2168
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8a378cf380f879439daf589cb8f9d2c
+      internalID: -1023290881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_13
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 2168
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e3b57762b257f2945bc2f3b2b654e15d
+      internalID: 148645511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_14
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 2168
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac9aecd0be7dd144381d35de39eb5d81
+      internalID: -1816329203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1084
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b8e8708810dd1247bd7fcbfaf8d17c8
+      internalID: 442873855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_16
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 1084
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ad312fc41d878d448b0ca5b537a00b01
+      internalID: 672940704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_17
+      rect:
+        serializedVersion: 2
+        x: 2160
+        y: 1084
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d511f8707392df0499d491f129768212
+      internalID: -1472799887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_18
+      rect:
+        serializedVersion: 2
+        x: 3240
+        y: 1084
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5f7d3f6fc89267e47bed81f83c6304ed
+      internalID: 365480533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_19
+      rect:
+        serializedVersion: 2
+        x: 4320
+        y: 1084
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a766854916963342b95a060fa334083
+      internalID: -1188408947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d46b1a01c060bf41909ffb0c92bd70b
+      internalID: -959737338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bei 1_21
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 0
+        width: 1080
+        height: 1084
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cfd8a46fb40fa3948aad109209ba42db
+      internalID: -888965817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      bei 1_0: 2041151572
+      bei 1_1: 790462924
+      bei 1_10: 1468388830
+      bei 1_11: -2009508856
+      bei 1_12: -1023290881
+      bei 1_13: 148645511
+      bei 1_14: -1816329203
+      bei 1_15: 442873855
+      bei 1_16: 672940704
+      bei 1_17: -1472799887
+      bei 1_18: 365480533
+      bei 1_19: -1188408947
+      bei 1_2: 782531922
+      bei 1_20: -959737338
+      bei 1_21: -888965817
+      bei 1_3: -140336877
+      bei 1_4: 1537276301
+      bei 1_5: 1858796959
+      bei 1_6: 1935415231
+      bei 1_7: 1049610037
+      bei 1_8: -383649160
+      bei 1_9: 1944325798
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

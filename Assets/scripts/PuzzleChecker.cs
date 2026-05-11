@@ -34,6 +34,16 @@ public class PuzzleChecker : MonoBehaviour
     [Header("统一控制反馈图片的生成大小")]
     public Vector3 uniformFeedbackScale = new Vector3(1f, 1f, 1f);
 
+    [Header("新增：数字文字反馈预制体(需要包含TextMeshPro或Text组件)")]
+    public GameObject typeTextPrefab; // 负责显示种类正确的数字
+    public GameObject doseTextPrefab; // 负责显示剂量/形态正确的数字
+
+    [Header("新增：数字文字的生成位置与下移量")]
+    public Transform textSpawnPos1;
+    public Transform textSpawnPos2;
+    [Tooltip("UI文字因为在Canvas里，通常下移数值需要比世界坐标大很多，比如Y设为 -50")]
+    public Vector3 textRoundOffset = new Vector3(0, -50f, 0);
+
     [Header("多轮机制：每轮下移设置")]
     [Tooltip("每按一次判定按钮，整体往下偏移多少？(例如Y:-2)")]
     public Vector3 roundOffset = new Vector3(0, -2f, 0); 
@@ -48,6 +58,17 @@ public class PuzzleChecker : MonoBehaviour
     public GameObject successPanel;
     [Tooltip("7次机会用完后弹出的失败黑屏面板")]
     public GameObject failPanel;
+
+    private Vector3 initialFb1Pos;
+    private Vector3 initialFb2Pos;
+    private GameObject currentFb1;
+    private GameObject currentFb2;
+
+    private void Start()
+    {
+        if (feedbackSpawnPos1 != null) initialFb1Pos = feedbackSpawnPos1.position;
+        if (feedbackSpawnPos2 != null) initialFb2Pos = feedbackSpawnPos2.position;
+    }
 
     // 这个方法用来在 Unity 面板中绑定给 Button (OnClick) 事件
     public void CheckResult()
@@ -132,16 +153,21 @@ public class PuzzleChecker : MonoBehaviour
             int maxIdx1 = Mathf.Clamp(correctTypeCount, 0, feedbackPrefabs1 != null ? feedbackPrefabs1.Length - 1 : 0);
             int maxIdx2 = Mathf.Clamp(correctFormCount, 0, feedbackPrefabs2 != null ? feedbackPrefabs2.Length - 1 : 0);
             
+            if (currentFb1 != null) Destroy(currentFb1);
             if (feedbackPrefabs1 != null && feedbackPrefabs1.Length > 0 && feedbackPrefabs1[maxIdx1] != null)
             {
-                GameObject fb1 = Instantiate(feedbackPrefabs1[maxIdx1], feedbackSpawnPos1.position, Quaternion.identity);
-                fb1.transform.localScale = uniformFeedbackScale;
+                currentFb1 = Instantiate(feedbackPrefabs1[maxIdx1], initialFb1Pos, Quaternion.identity);
+                currentFb1.transform.localScale = uniformFeedbackScale;
             }
+
+            if (currentFb2 != null) Destroy(currentFb2);
             if (feedbackPrefabs2 != null && feedbackPrefabs2.Length > 0 && feedbackPrefabs2[maxIdx2] != null)
             {
-                GameObject fb2 = Instantiate(feedbackPrefabs2[maxIdx2], feedbackSpawnPos2.position, Quaternion.identity);
-                fb2.transform.localScale = uniformFeedbackScale;
+                currentFb2 = Instantiate(feedbackPrefabs2[maxIdx2], initialFb2Pos, Quaternion.identity);
+                currentFb2.transform.localScale = uniformFeedbackScale;
             }
+            
+            SpawnTextFeedback(correctTypeCount, correctFormCount);
 
             if (successPanel != null) successPanel.SetActive(true);
             return; // 胜出了就不再执行后面的下移操作
@@ -161,17 +187,21 @@ public class PuzzleChecker : MonoBehaviour
 
         Debug.Log($"结算完成！玩家共答对了 {correctTypeCount} 个各类别的图片，以及 {correctFormCount} 个正确形态的图片。");
 
+        if (currentFb1 != null) Destroy(currentFb1);
         if (feedbackPrefabs1 != null && feedbackIndex1 < feedbackPrefabs1.Length && feedbackPrefabs1[feedbackIndex1] != null)
         {
-            GameObject fb1 = Instantiate(feedbackPrefabs1[feedbackIndex1], feedbackSpawnPos1.position, Quaternion.identity);
-            fb1.transform.localScale = uniformFeedbackScale;
+            currentFb1 = Instantiate(feedbackPrefabs1[feedbackIndex1], initialFb1Pos, Quaternion.identity);
+            currentFb1.transform.localScale = uniformFeedbackScale;
         }
                 
+        if (currentFb2 != null) Destroy(currentFb2);
         if (feedbackPrefabs2 != null && feedbackIndex2 < feedbackPrefabs2.Length && feedbackPrefabs2[feedbackIndex2] != null)
         {
-            GameObject fb2 = Instantiate(feedbackPrefabs2[feedbackIndex2], feedbackSpawnPos2.position, Quaternion.identity);
-            fb2.transform.localScale = uniformFeedbackScale;
+            currentFb2 = Instantiate(feedbackPrefabs2[feedbackIndex2], initialFb2Pos, Quaternion.identity);
+            currentFb2.transform.localScale = uniformFeedbackScale;
         }
+
+        SpawnTextFeedback(correctTypeCount, correctFormCount);
 
         // 5. 准备开启新的一轮！
         
@@ -199,6 +229,48 @@ public class PuzzleChecker : MonoBehaviour
         
         // 重新加载当前场景，彻底重置一切
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void SpawnTextFeedback(int typeCount, int doseCount)
+    {
+        // 根据当前挑战次数(currentAttempt)，独立计算文字该下移多少次
+        Vector3 currentTextOffset = textRoundOffset * (currentAttempt - 1);
+
+        if (typeTextPrefab != null && textSpawnPos1 != null)
+        {
+            GameObject typeTxtObj = Instantiate(typeTextPrefab, textSpawnPos1.parent);
+            
+            // 初始位置加上额外累计偏移量
+            typeTxtObj.transform.position = textSpawnPos1.position + currentTextOffset;
+            typeTxtObj.transform.localScale = typeTextPrefab.transform.localScale;
+            typeTxtObj.SetActive(true);
+
+            var tmp = typeTxtObj.GetComponentInChildren<TMPro.TMP_Text>(true);
+            if (tmp != null) tmp.text = typeCount.ToString();
+            else
+            {
+                var txt = typeTxtObj.GetComponentInChildren<UnityEngine.UI.Text>(true);
+                if (txt != null) txt.text = typeCount.ToString();
+            }
+        }
+        
+        if (doseTextPrefab != null && textSpawnPos2 != null)
+        {
+            GameObject doseTxtObj = Instantiate(doseTextPrefab, textSpawnPos2.parent);
+            
+            // 初始位置加上额外累计偏移量
+            doseTxtObj.transform.position = textSpawnPos2.position + currentTextOffset;
+            doseTxtObj.transform.localScale = doseTextPrefab.transform.localScale;
+            doseTxtObj.SetActive(true);
+
+            var tmp = doseTxtObj.GetComponentInChildren<TMPro.TMP_Text>(true);
+            if (tmp != null) tmp.text = doseCount.ToString();
+            else
+            {
+                var txt = doseTxtObj.GetComponentInChildren<UnityEngine.UI.Text>(true);
+                if (txt != null) txt.text = doseCount.ToString();
+            }
+        }
     }
 }
 
