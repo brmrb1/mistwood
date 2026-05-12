@@ -18,6 +18,9 @@ public class dragright : MonoBehaviour
     [SerializeField] private string successTriggerName = "Play"; // 动画触发器的名称
     [SerializeField] private float animationDuration = 1.0f; // 【新增】动画时长，等待该时间后再消失/生成新图
     
+    [Header("悬浮提示")]
+    [SerializeField] private GameObject hoverTooltipObj; // 鼠标悬浮时显示的提示图（建议把该提示图作为子物体，默认设为不激活/隐藏，然后拖入此格子）
+    
     private bool isAnimating = false; // 是否在播放动画中，防止多次拖拽
     
     // 【修改】使用静态字典按“生成位置(spawnPoint)”来独立记录图片和状态
@@ -101,11 +104,32 @@ public class dragright : MonoBehaviour
     private void OnMouseEnter()
     {
         transform.localScale = originalScale * 1.2f;
+        
+        // 鼠标移入时显示悬浮图
+        if (hoverTooltipObj != null)
+        {
+            hoverTooltipObj.SetActive(true);
+        }
     }
 
     private void OnMouseExit()
     {
         transform.localScale = originalScale;
+        
+        // 鼠标移出时隐藏悬浮图
+        if (hoverTooltipObj != null)
+        {
+            hoverTooltipObj.SetActive(false);
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        // 鼠标刚刚按下去（准备拖拽时）立刻让它消失
+        if (hoverTooltipObj != null)
+        {
+            hoverTooltipObj.SetActive(false);
+        }
     }
 
     // 拖拽过程
@@ -129,6 +153,8 @@ public class dragright : MonoBehaviour
 
         // 计算当前位置和目标位置的距离（忽略Z轴）
         float distance = Vector2.Distance(transform.position, correctTrans.position);
+
+        Debug.Log($"【拖拽判定】图片[{gameObject.name}]所在坐标: {transform.position}, 目标坑位[{correctTrans.name}]中心坐标: {correctTrans.position}。\n两点距离: {distance}，允许范围: {matchDistance}");
 
         if (distance <= matchDistance)
         {
@@ -313,6 +339,23 @@ public class dragright : MonoBehaviour
         {
             Gizmos.color = new Color(0, 1, 0, 0.5f); // 半透明绿色
             Gizmos.DrawWireSphere(correctTrans.position, matchDistance);
+            
+            // 【重要排错】画一条红线：把“当前物体”和“代码认准的目标”连起来！
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, correctTrans.position);
+        }
+
+        if (spawnPoint != null)
+        {
+            Gizmos.color = new Color(0, 0, 1, 0.5f); // 半透明蓝色表示生成位置
+            Gizmos.DrawWireCube(spawnPoint.position, customSpawnScale);
+            
+            // 画一条黄线：把“判定位置”和“最终生成位置”连起来！
+            if (correctTrans != null)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(correctTrans.position, spawnPoint.position);
+            }
         }
     }
 }
