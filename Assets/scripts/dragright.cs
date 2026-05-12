@@ -89,6 +89,7 @@ public class dragright : MonoBehaviour
 
     private Vector3 originalScale;
     private Color originalColor;                         // 【新增】记录初始颜色，用于重置
+    private int originalSortingOrder;                    // 【新增】记录初始层级
 
     private void Start()
     {
@@ -98,12 +99,18 @@ public class dragright : MonoBehaviour
         if (spriteRenderer != null)
         {
             originalColor = spriteRenderer.color;
+            originalSortingOrder = spriteRenderer.sortingOrder;
         }
     }
 
     private void OnMouseEnter()
     {
         transform.localScale = originalScale * 1.2f;
+        
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sortingOrder = 10;
+        }
         
         // 鼠标移入时显示悬浮图
         if (hoverTooltipObj != null)
@@ -115,6 +122,11 @@ public class dragright : MonoBehaviour
     private void OnMouseExit()
     {
         transform.localScale = originalScale;
+        
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sortingOrder = originalSortingOrder;
+        }
         
         // 鼠标移出时隐藏悬浮图
         if (hoverTooltipObj != null)
