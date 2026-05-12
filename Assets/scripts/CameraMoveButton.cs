@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 
-public class CameraMoveButton : MonoBehaviour
+public class CameraMoveButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("移动目标设置")]
     [Tooltip("你想移动什么？如果不填，默认移动主摄像机。你也可以把一个包含所有背景/物品的父节点拖拉进来移动它")]
@@ -19,11 +20,17 @@ public class CameraMoveButton : MonoBehaviour
     public Sprite upSprite; // 此时镜头在上方，表示"向下"或处于第二状态的图片
     public Sprite downSprite; // 此时镜头在下方，表示"向上"或初始状态的图片
 
+    [Header("悬停放大设置")]
+    public float hoverScaleMultiplier = 1.1f; // 缩放倍数
+    private Vector3 originalButtonScale;
+
     private bool isUp = false; // 当前镜头的状态（是否在上方）
     private Coroutine moveCoroutine;
 
     private void Start()
     {
+        originalButtonScale = transform.localScale; // 记录按钮本身初始大小
+
         if (targetObject == null && Camera.main != null)
             targetObject = Camera.main.transform;
 
@@ -84,5 +91,20 @@ public class CameraMoveButton : MonoBehaviour
         }
         // 最后精确对其目标位置
         targetObject.position = targetPos;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        transform.localScale = originalButtonScale * hoverScaleMultiplier;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        transform.localScale = originalButtonScale;
+    }
+
+    private void OnDisable()
+    {
+        transform.localScale = originalButtonScale;
     }
 }
