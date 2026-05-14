@@ -101,6 +101,97 @@ public class dragright : MonoBehaviour
             originalColor = spriteRenderer.color;
             originalSortingOrder = spriteRenderer.sortingOrder;
         }
+
+        // --- 读取存档数据来恢复状态 ---
+        if (PlayerPrefs.HasKey("TargetLoadSlot"))
+        {
+            int slot = PlayerPrefs.GetInt("TargetLoadSlot");
+            int savedSuccess = PlayerPrefs.GetInt("DragProgress_" + slot + "_" + gameObject.name, -1);
+            if (savedSuccess != -1)
+            {
+                successCount = savedSuccess;
+                if (successCount >= 3)
+                {
+                    gameObject.SetActive(false); // 如果之前已拉满3次，这件物品消失
+                }
+                else if (successCount > 0)
+                {
+                    // 改变透明度，模拟之前被拖拽的状态
+                    if (spriteRenderer != null)
+                    {
+                        Color c = spriteRenderer.color;
+                        c.a -= 0.25f * successCount;
+                        spriteRenderer.color = c;
+                    }
+                }
+
+                // 如果成功次数大于0，说明需要重新在坑位上生成最后一件预制体 (即快进)
+                if (successCount > 0 && spawnPoint != null && resultPrefabs != null)
+                {
+                    // 为了防止多次生成覆盖问题（比如多个都保存到了同一个坑位），由最新的覆盖旧的
+                    RestoreSavedPrefab(successCount);
+                }
+            }
+        }
+    }
+
+    // --- 【新增】专门用于直接根据存档次数强制生成结果的函数 ---
+    private void RestoreSavedPrefab(int totalCount)
+    {
+        if (totalCount > resultPrefabs.Length) totalCount = resultPrefabs.Length;
+
+        // 【修改点】由于存在“多轮”机制，不能只生成最后一个预制体，必须把前面经历过的几次阶段全部生成保留下来
+        for (int i = 1; i <= totalCount; i++)
+        {
+            GameObject prefabToSpawn = resultPrefabs[i - 1];
+            if (prefabToSpawn != null)
+            {
+                // 只有最后一次（即最近没结算的）才需要去替换坑位、占据字典，以前的结算历史不能互相破坏覆盖
+                if (i == totalCount)
+                {
+                    if (spawnedObjsDict.ContainsKey(spawnPoint) && spawnedObjsDict[spawnPoint] != null) 
+                        Destroy(spawnedObjsDict[spawnPoint]);
+                    lastDragDict[spawnPoint] = this;
+                }
+
+                PuzzleChecker checker = Object.FindObjectOfType<PuzzleChecker>();
+                Transform targetContent = (checker != null && checker.scrollContent != null) ? checker.scrollContent : spawnPoint;
+
+                GameObject newlySpawned = Instantiate(prefabToSpawn, spawnPoint.position, spawnPoint.rotation, targetContent);
+                
+                Vector3 newPos = spawnPoint.position;
+                newPos.z = transform.position.z;
+                newlySpawned.transform.position = newPos;
+                
+                if (targetContent != null)
+                {
+                    Vector3 parentScale = targetContent.lossyScale;
+                    newlySpawned.transform.localScale = new Vector3(
+                        customSpawnScale.x / parentScale.x,
+                        customSpawnScale.y / parentScale.y,
+                        customSpawnScale.z / parentScale.z
+                    );
+                }
+                else
+                {
+                    newlySpawned.transform.localScale = customSpawnScale;
+                }
+
+                FeedbackClickable clickable = newlySpawned.AddComponent<FeedbackClickable>();
+                clickable.ownerDragright = this;
+
+                Canvas spawnedCanvas = newlySpawned.GetComponent<Canvas>();
+                if (spawnedCanvas != null)
+                {
+                    spawnedCanvas.overrideSorting = true;
+                }
+
+                if (i == totalCount)
+                {
+                    spawnedObjsDict[spawnPoint] = newlySpawned;
+                }
+            }
+        }
     }
 
     private void OnMouseEnter()
@@ -268,7 +359,13 @@ public class dragright : MonoBehaviour
                     // 【新增：使其可点击】为实例生成的图片添加点击组件，并传给它当前这个拖拽物体
                     FeedbackClickable clickable = newlySpawned.AddComponent<FeedbackClickable>();
                     clickable.ownerDragright = this;
-
+                    // 【新增：自动开启 Override Sorting】解决预制体Canvas层级不覆盖的问题
+                    Canvas spawnedCanvas = newlySpawned.GetComponent<Canvas>();
+                    if (spawnedCanvas != null)
+                    {
+                        spawnedCanvas.overrideSorting = true;
+                        // spawnedCanvas.sortingOrder = 10; // 如果还需要它排在最前面，可以把这句也解开注释并设置一个数值
+                    }
                     // 把新生成的物品登记记录在这个坑位上
                     spawnedObjsDict[spawnPoint] = newlySpawned;
                     

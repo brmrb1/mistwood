@@ -6,6 +6,8 @@ public class MainMenu : MonoBehaviour
     [Header("要跳转的目标场景名称")]
     public string sceneToLoad = "Scene01"; // 默认填入你的游戏场景名字
 
+    // --- 游戏基础控制 ---
+
     // 这个方法用来绑定给“开始按钮”的 OnClick 事件
     public void StartGame()
     {
@@ -18,5 +20,14 @@ public class MainMenu : MonoBehaviour
     {
         Debug.Log("退出游戏");
         Application.Quit();
+    }
+
+    // 切换面板的显示/隐藏状态（点击打开，再点击关闭）
+    public void TogglePanel(GameObject panel)
+    {
+        if (panel != null)
+        {
+            panel.SetActive(!panel.activeSelf);
+        }
     }
 }

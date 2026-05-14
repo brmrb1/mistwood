@@ -89,6 +89,14 @@ public class talk : MonoBehaviour
     {
         ReadText(dialogDataFile);
 
+        // 如果是通过读取存档进入这个场景的，恢复之前记录的对话进度
+        if (PlayerPrefs.HasKey("TargetLoadDialogIndex"))
+        {
+            dialogIndex = PlayerPrefs.GetInt("TargetLoadDialogIndex");
+            // 读取完成之后将以此标记清空，避免下次重新开始游戏时被影响
+            PlayerPrefs.DeleteKey("TargetLoadDialogIndex");
+        }
+
         // 【新增自动匹配】
         // 自动检索当前章节的起始ID。如果不加这个，在guide里章节是1，但dialogIndex默认是0，
         // 游戏就会去寻找ID为0的对话进行播放，从而全都被跳过，导致无UI和对话出现！

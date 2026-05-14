@@ -31,6 +31,9 @@ public class PuzzleChecker : MonoBehaviour
     [Header("位置2的5种反馈图片(同上对应)")]
     public GameObject[] feedbackPrefabs2;
 
+    [Header("直接生成在此节点下(拖入canmove)")]
+    public Transform feedbackParent;
+
     [Header("统一控制反馈图片的生成大小")]
     public Vector3 uniformFeedbackScale = new Vector3(1f, 1f, 1f);
 
@@ -172,15 +175,19 @@ public class PuzzleChecker : MonoBehaviour
             if (currentFb1 != null) Destroy(currentFb1);
             if (feedbackPrefabs1 != null && feedbackPrefabs1.Length > 0 && feedbackPrefabs1[maxIdx1] != null)
             {
-                currentFb1 = Instantiate(feedbackPrefabs1[maxIdx1], initialFb1Pos, Quaternion.identity);
-                currentFb1.transform.localScale = uniformFeedbackScale;
+                currentFb1 = Instantiate(feedbackPrefabs1[maxIdx1], feedbackParent);
+                currentFb1.transform.position = feedbackSpawnPos1.position; // 保持在占位点的位置
+                currentFb1.transform.localPosition = new Vector3(currentFb1.transform.localPosition.x, currentFb1.transform.localPosition.y, 0f); // 强制Z轴为0防止被背景遮挡
+                currentFb1.transform.localScale = feedbackSpawnPos1.localScale; // 【新增】强制使用定位占位物体的自身缩放比例
             }
 
             if (currentFb2 != null) Destroy(currentFb2);
             if (feedbackPrefabs2 != null && feedbackPrefabs2.Length > 0 && feedbackPrefabs2[maxIdx2] != null)
             {
-                currentFb2 = Instantiate(feedbackPrefabs2[maxIdx2], initialFb2Pos, Quaternion.identity);
-                currentFb2.transform.localScale = uniformFeedbackScale;
+                currentFb2 = Instantiate(feedbackPrefabs2[maxIdx2], feedbackParent);
+                currentFb2.transform.position = feedbackSpawnPos2.position;
+                currentFb2.transform.localPosition = new Vector3(currentFb2.transform.localPosition.x, currentFb2.transform.localPosition.y, 0f);
+                currentFb2.transform.localScale = feedbackSpawnPos2.localScale; // 【新增】强制使用定位占位物体的自身缩放比例
             }
             
             SpawnTextFeedback(correctTypeCount, correctFormCount);
@@ -206,15 +213,19 @@ public class PuzzleChecker : MonoBehaviour
         if (currentFb1 != null) Destroy(currentFb1);
         if (feedbackPrefabs1 != null && feedbackIndex1 < feedbackPrefabs1.Length && feedbackPrefabs1[feedbackIndex1] != null)
         {
-            currentFb1 = Instantiate(feedbackPrefabs1[feedbackIndex1], initialFb1Pos, Quaternion.identity);
-            currentFb1.transform.localScale = uniformFeedbackScale;
+            currentFb1 = Instantiate(feedbackPrefabs1[feedbackIndex1], feedbackParent);
+            currentFb1.transform.position = feedbackSpawnPos1.position; // 保持在占位点的位置
+            currentFb1.transform.localPosition = new Vector3(currentFb1.transform.localPosition.x, currentFb1.transform.localPosition.y, 0f); // 强制Z轴为0防止被背景遮挡
+            currentFb1.transform.localScale = feedbackSpawnPos1.localScale; // 【新增】强制使用定位占位物体的自身缩放比例
         }
                 
         if (currentFb2 != null) Destroy(currentFb2);
         if (feedbackPrefabs2 != null && feedbackIndex2 < feedbackPrefabs2.Length && feedbackPrefabs2[feedbackIndex2] != null)
         {
-            currentFb2 = Instantiate(feedbackPrefabs2[feedbackIndex2], initialFb2Pos, Quaternion.identity);
-            currentFb2.transform.localScale = uniformFeedbackScale;
+            currentFb2 = Instantiate(feedbackPrefabs2[feedbackIndex2], feedbackParent);
+            currentFb2.transform.position = feedbackSpawnPos2.position;
+            currentFb2.transform.localPosition = new Vector3(currentFb2.transform.localPosition.x, currentFb2.transform.localPosition.y, 0f);
+            currentFb2.transform.localScale = feedbackSpawnPos2.localScale; // 【新增】强制使用定位占位物体的自身缩放比例
         }
 
         SpawnTextFeedback(correctTypeCount, correctFormCount);
