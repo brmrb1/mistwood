@@ -224,6 +224,13 @@ public class SaveManager : MonoBehaviour
             // 通过物体的名字作为唯一标识符存储它们各自“成功生成的次数”
             PlayerPrefs.SetInt("DragProgress_" + slotIndex + "_" + d.gameObject.name, d.CurrentSuccessCount);
         }
+
+        // 【新增】如果是解谜场景，通知检验系统去把过去的各种历史结算快照序列化到 PlayerPrefs
+        PuzzleChecker checker = FindObjectOfType<PuzzleChecker>();
+        if (checker != null)
+        {
+            checker.SaveHistoryToPrefs(slotIndex);
+        }
         
         PlayerPrefs.Save();
         

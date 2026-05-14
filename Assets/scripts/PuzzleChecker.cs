@@ -3,6 +3,26 @@ using UnityEngine;
 using UnityEngine.SceneManagement; // 引入场景管理，用于重新开始游戏
 
 [System.Serializable]
+public class PlacementRecord
+{
+    public string spawnPointName;
+    public string dragrightName;
+    public int successCount;
+}
+
+[System.Serializable]
+public class RoundRecord
+{
+    public List<PlacementRecord> placements = new List<PlacementRecord>();
+}
+
+[System.Serializable]
+public class PuzzleHistoryData
+{
+    public List<RoundRecord> rounds = new List<RoundRecord>();
+}
+
+[System.Serializable]
 public class PuzzleAnswer
 {
     [Header("需要检查的生成点(Spawn Point)")]
@@ -71,6 +91,8 @@ public class PuzzleChecker : MonoBehaviour
     public GameObject successPanel;
     [Tooltip("7次机会用完后弹出的失败黑屏面板")]
     public GameObject failPanel;
+    [Tooltip("【新增】如果有填入正确答案的坑位没放东西，点击结算弹出的提示面板")]
+    public GameObject emptyPromptPanel;
 
     private Vector3 initialFb1Pos;
     private Vector3 initialFb2Pos;
@@ -78,7 +100,10 @@ public class PuzzleChecker : MonoBehaviour
     private GameObject currentFb2;
     private float initialContentHeight;
 
-    private void Start()
+    // 【新增】保存的历史记录
+    private PuzzleHistoryData historyData = new PuzzleHistoryData();
+
+    private void Awake()
     {
         if (feedbackSpawnPos1 != null) initialFb1Pos = feedbackSpawnPos1.position;
         if (feedbackSpawnPos2 != null) initialFb2Pos = feedbackSpawnPos2.position;
@@ -87,9 +112,24 @@ public class PuzzleChecker : MonoBehaviour
         {
             initialContentHeight = scrollContent.sizeDelta.y;
         }
+
+        // --- 读取存档时的结算历史恢复 ---
+        if (PlayerPrefs.HasKey("TargetLoadSlot"))
+        {
+            int slot = PlayerPrefs.GetInt("TargetLoadSlot");
+            RestoreHistory(slot);
+        }
     }
 
-    // 这个方法用来在 Unity 面板中绑定给 Button (OnClick) 事件
+    // 【新增】关闭未放置满提示面板的按钮事件
+    public void CloseEmptyPrompt()
+    {
+        if (emptyPromptPanel != null)
+        {
+            emptyPromptPanel.SetActive(false);
+        }
+    }
+
     public void CheckResult()
     {
         // 如果已经结束（胜利或失败），禁止继续判定
@@ -98,11 +138,29 @@ public class PuzzleChecker : MonoBehaviour
             return; 
         }
 
-        currentAttempt++; // 增加一次挑战次数
-        Debug.Log($"当前是第 {currentAttempt} 次挑战，剩余 {maxAttempts - currentAttempt} 次机会。");
-
         // 1. 获取全局正在被占据的所有的坑位和上面的物品
         var currentPlacements = dragright.GetCurrentPlacements();
+
+        // 【新增 1】检查是否配置的所有 targetSpawnPoint 坑位都被放满了
+        bool allFilled = true;
+        foreach (var answer in correctAnswers)
+        {
+            if (answer.targetSpawnPoint != null && !currentPlacements.ContainsKey(answer.targetSpawnPoint))
+            {
+                allFilled = false;
+                break;
+            }
+        }
+
+        if (!allFilled)
+        {
+            Debug.LogWarning("存在未放置拼图的坑位，无法结算！已弹出提示面板。");
+            if (emptyPromptPanel != null) emptyPromptPanel.SetActive(true);
+            return;
+        }
+
+        currentAttempt++; // 增加一次挑战次数
+        Debug.Log($"当前是第 {currentAttempt} 次挑战，剩余 {maxAttempts - currentAttempt} 次机会。");
         
         int correctTypeCount = 0; // 种类正确的数量（位置1对应的判定）
         int correctFormCount = 0; // 种类和形态都正确的数量（位置2对应的判定）
@@ -230,6 +288,22 @@ public class PuzzleChecker : MonoBehaviour
 
         SpawnTextFeedback(correctTypeCount, correctFormCount);
 
+        // 【新增】在清空记录前，把这一台当前的状态存入历史存档记录里
+        RoundRecord newRecord = new RoundRecord();
+        foreach (var kvp in currentPlacements)
+        {
+            if (kvp.Key != null && kvp.Value != null)
+            {
+                newRecord.placements.Add(new PlacementRecord()
+                {
+                    spawnPointName = kvp.Key.name,
+                    dragrightName = kvp.Value.gameObject.name,
+                    successCount = kvp.Value.CurrentSuccessCount
+                });
+            }
+        }
+        historyData.rounds.Add(newRecord);
+
         // 5. 准备开启新的一轮！
         
         // (1) 通知所有拖拽物品退回原位，且代码“失忆”（不再记录上一轮的生成图，让上一轮的图留作历史）
@@ -311,6 +385,142 @@ public class PuzzleChecker : MonoBehaviour
                 if (txt != null) txt.text = doseCount.ToString();
             }
         }
+    }
+
+    // --- 【新增】供外部（如SaveManager）调用以持久化历史 ---
+    public void SaveHistoryToPrefs(int slotIndex)
+    {
+        string json = JsonUtility.ToJson(historyData);
+        PlayerPrefs.SetString("PuzzleHistory_" + slotIndex, json);
+        PlayerPrefs.SetInt("PuzzleAttempt_" + slotIndex, currentAttempt);
+    }
+
+    // --- 【新增】恢复历史视觉状态 ---
+    private void RestoreHistory(int slotIndex)
+    {
+        string key = "PuzzleHistory_" + slotIndex;
+        if (!PlayerPrefs.HasKey(key)) return;
+
+        string json = PlayerPrefs.GetString(key);
+        JsonUtility.FromJsonOverwrite(json, historyData);
+        int savedAttempt = PlayerPrefs.GetInt("PuzzleAttempt_" + slotIndex, 0);
+
+        if (historyData.rounds == null) return;
+
+        // 收集场景里现存的所有 dragright 和 spawnPoint 等节点供名字查找
+        dragright[] allDrags = FindObjectsOfType<dragright>(true);
+        Dictionary<string, dragright> dragDict = new Dictionary<string, dragright>();
+        foreach (var d in allDrags) dragDict[d.gameObject.name] = d;
+
+        Dictionary<string, Transform> pointDict = new Dictionary<string, Transform>();
+        Transform[] allTransforms = FindObjectsOfType<Transform>(true);
+        foreach (var t in allTransforms) 
+        {
+            if (!pointDict.ContainsKey(t.name)) pointDict[t.name] = t;
+        }
+
+        // 逐回合重新计算和生成！
+        for (int i = 0; i < savedAttempt; i++)
+        {
+            if (i >= historyData.rounds.Count) break;
+
+            RoundRecord record = historyData.rounds[i];
+            
+            int correctTypeCount = 0;
+            int correctFormCount = 0;
+
+            // 1. 根据历史记录在当时的坑位上重新实例化拖放物体
+            foreach (var r in record.placements)
+            {
+                if (dragDict.ContainsKey(r.dragrightName) && pointDict.ContainsKey(r.spawnPointName))
+                {
+                    dragright d = dragDict[r.dragrightName];
+                    Transform spt = pointDict[r.spawnPointName];
+
+                    // 因为坑位还没有在这轮下移，所以直接原地生成
+                    Transform targetContent = (scrollContent != null) ? scrollContent : spt;
+
+                    // 为了展现当时的状态，把这件物品对应的正确次数的最终预制体实例化出来
+                    // (由于它是一个私有字段的复用，也可以借用 public 接口，这里我们直接找 prefab)
+                    // 注意这里的逻辑必须尽量吻合 dragright 最后的 resultPrefabs
+                    int finalCount = r.successCount;
+                    if (finalCount > 0)
+                    {
+                        // 这边为了简单，直接通过获取对应的 prefab 予以构建
+                        System.Reflection.FieldInfo field = typeof(dragright).GetField("resultPrefabs", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                        if (field != null)
+                        {
+                            GameObject[] prefabs = field.GetValue(d) as GameObject[];
+                            if (prefabs != null && finalCount <= prefabs.Length)
+                            {
+                                GameObject p = prefabs[finalCount - 1];
+                                if (p != null)
+                                {
+                                    GameObject cloned = Instantiate(p, spt.position, spt.rotation, targetContent);
+                                    Vector3 newPos = spt.position;
+                                    newPos.z = d.transform.position.z;
+                                    cloned.transform.position = newPos;
+
+                                    if (targetContent != null)
+                                    {
+                                        Vector3 customScale = new Vector3(1, 1, 1); 
+                                        System.Reflection.FieldInfo scaleField = typeof(dragright).GetField("customSpawnScale", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                                        if (scaleField != null) customScale = (Vector3)scaleField.GetValue(d);
+                                        
+                                        Vector3 pScale = targetContent.lossyScale;
+                                        cloned.transform.localScale = new Vector3(
+                                            customScale.x / pScale.x,
+                                            customScale.y / pScale.y,
+                                            customScale.z / pScale.z
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // 重新算下这格对不对
+                    foreach (var ans in correctAnswers)
+                    {
+                        if (ans.targetSpawnPoint != null && ans.targetSpawnPoint.name == spt.name)
+                        {
+                            string expectedName = ans.expectedItem.gameObject.name.Split('(')[0].Trim();
+                            string currName = d.gameObject.name.Split('(')[0].Trim();
+                            
+                            if (currName == expectedName)
+                            {
+                                correctTypeCount++;
+                                if (finalCount == ans.expectedCount)
+                                {
+                                    correctFormCount++;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // 2. 模拟当轮回合执行对应的反馈文本生成
+            int savedAttemptOrigin = currentAttempt; // 暂存
+            currentAttempt = i + 1; // 临时变更为生成时的当时次次回合数
+            SpawnTextFeedback(correctTypeCount, correctFormCount);
+            currentAttempt = savedAttemptOrigin; // 变回来
+
+            // 3. 把坑位往下移一层
+            if (transformsToShiftDown != null)
+            {
+                foreach (var t in transformsToShiftDown)
+                {
+                    if (t != null) t.position += roundOffset;
+                }
+            }
+        }
+
+        // 把游戏本身的尝试次数更新为存档数量
+        currentAttempt = savedAttempt;
+
+        // 【如果答对了最后一次或者失败了】需要重新弹出相关判定（简单处理即可）。
     }
 }
 
