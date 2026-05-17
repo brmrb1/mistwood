@@ -158,6 +158,33 @@ public class SaveManager : MonoBehaviour
         if (hasSavePromptPanel != null) hasSavePromptPanel.SetActive(false);
     }
 
+    public void DeleteSelectedSave()
+    {
+        Debug.Log("进入了 DeleteSelectedSave 方法");
+        if (currentSelectedSlot == -1) 
+        {
+            Debug.LogWarning("currentSelectedSlot 为 -1，强制返回，没往下跑。");
+            return;
+        }
+
+        // 删除该档位的所有数据
+        PlayerPrefs.DeleteKey("SaveTime_" + currentSelectedSlot);
+        PlayerPrefs.DeleteKey("PlayTimeString_" + currentSelectedSlot);
+        PlayerPrefs.DeleteKey("PlayTimeFloat_" + currentSelectedSlot);
+        PlayerPrefs.DeleteKey("SavedScene_" + currentSelectedSlot);
+        PlayerPrefs.DeleteKey("SavedDialogIndex_" + currentSelectedSlot);
+        PlayerPrefs.Save();
+
+        // 隐藏面板
+        if (hasSavePromptPanel != null) hasSavePromptPanel.SetActive(false);
+
+        // 刷新存档界面
+        RefreshSaveSlots();
+
+        currentSelectedSlot = -1;
+        currentSelectedTextComp = null;
+    }
+
     // --- 在无存档的弹窗上绑定的按钮事件 ---
 
     public void ConfirmSaveNewGame()
@@ -207,15 +234,15 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.SetString("SavedScene_" + slotIndex, currentSceneName);
 
         // 如果场景中有对话系统，保存当前对话进度
-        talk talkSystem = FindObjectOfType<talk>();
-        if (talkSystem != null)
-        {
-            PlayerPrefs.SetInt("SavedDialogIndex_" + slotIndex, talkSystem.dialogIndex);
-        }
-        else
-        {
+        // talk talkSystem = FindObjectOfType<talk>();
+        // if (talkSystem != null)
+        // {
+        //     PlayerPrefs.SetInt("SavedDialogIndex_" + slotIndex, talkSystem.dialogIndex);
+        // }
+        // else
+        // {
             PlayerPrefs.SetInt("SavedDialogIndex_" + slotIndex, 0);
-        }
+        // }
 
         // 【新增】保存场景中所有能够拖拽生存预制体的物品进度状态
         dragright[] allDrags = FindObjectsOfType<dragright>();
