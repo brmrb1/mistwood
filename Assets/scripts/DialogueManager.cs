@@ -56,6 +56,7 @@ public class DialogueManager : MonoBehaviour
     {
         if (Instance == null)
         {
+            Instance = this;
             // 如果你希望对话管理器跨场景存在，可以取消注释下面这行
             // DontDestroyOnLoad(gameObject);
 
@@ -118,13 +119,29 @@ public class DialogueManager : MonoBehaviour
         // 监听鼠标左键点击，或者手机触屏
         if (Input.GetMouseButtonDown(0))
         {
-            // 检查点击位置是否在 UI 按钮上，如果在 UI 按钮上，就不要触发挥屏的继续效果，交给按钮自身处理
+            // 检查点击位置是否在 UI 按钮上，如果在 UI 按钮上，就交给按钮自身处理
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             {
                 return;
             }
 
-            ManualUserClick();
+            // 只允许点击屏幕快进正在播放的打字，不允许点击屏幕跳到下一句...
+            if (currentState == DialogueState.Playing)
+            {
+                isAutoPlaying = false; 
+                if (speedDropdownObj != null) speedDropdownObj.SetActive(false);
+                skipTyping = true; // 玩家点击，跳过逐字打印
+            }
+            // ...除非当前对话框是被隐藏的（比如纯净背景演出中），此时允许点击屏幕继续剧情
+            else if (currentState == DialogueState.Waiting)
+            {
+                if (dialoguePanel != null && !dialoguePanel.activeInHierarchy)
+                {
+                    isAutoPlaying = false;
+                    if (speedDropdownObj != null) speedDropdownObj.SetActive(false);
+                    ContinueDialogue();
+                }
+            }
         }
     }
 
@@ -219,25 +236,25 @@ public class DialogueManager : MonoBehaviour
             }
 
             // 至少要保证基本列够获取以防报错
-            if (values.Length < 14) continue;
+            if (values.Length < 15) continue;
 
             DialogueLine newLine = new DialogueLine
             {
                 type = values[0],
                 id = values[1],
                 charName = values[2],
-                position = values[3],
-                content = values[4],
-                nextID = values[5],
-                effect = values[6],
-                sound = values[7],
-                background = values[8],
-                promptUI = values[9],
-                variable = values[10],
-                expression = values[11],
-                chapter = values[12],
-                eventParams = values[13],
-                bgEffect = values.Length > 14 ? values[14] : "" // 兼容旧表格，如果有第15列则读取为背景特效
+                expression = values[3],
+                position = values[4],
+                content = values[5],
+                nextID = values[6],
+                bgEffect = values[7],
+                effect = values[8],
+                sound = values[9],
+                bgm = values[10],
+                background = values[11],
+                variable = values[12],
+                chapter = values[13],
+                eventParams = values[14]
             };
 
             if (!string.IsNullOrEmpty(newLine.id) && !dialogueDict.ContainsKey(newLine.id))
@@ -268,10 +285,16 @@ public class DialogueManager : MonoBehaviour
 
         if (currentLine.type == "#")
         {
-            // 如果台词为空，则隐藏对话框；如果不为空，则显示对话框
-            if (dialoguePanel != null) 
+            // 如果台词为空，则隐藏对话框和名字；如果不为空，则显示
+            bool hasContent = !string.IsNullOrEmpty(currentLine.content);
+            if (dialoguePanel != null) dialoguePanel.SetActive(hasContent);
+            if (nameText != null)
             {
-                dialoguePanel.SetActive(!string.IsNullOrEmpty(currentLine.content));
+                nameText.gameObject.SetActive(hasContent);
+                if (nameText.transform.parent != null && nameText.transform.parent != dialoguePanel.transform)
+                {
+                    nameText.transform.parent.gameObject.SetActive(hasContent);
+                }
             }
 
             // 普通对话
@@ -351,29 +374,31 @@ public class DialogueManager : MonoBehaviour
         string currentBgEffect = string.IsNullOrEmpty(line.bgEffect) ? "" : line.bgEffect;
 
         // 更换背景: 使用 SpriteRenderer
-        if (backgroundRenderer != null && !string.IsNullOrEmpty(line.background))
+        if (backgroundRenderer != null)
         {
-            if (bgDict.TryGetValue(line.background, out Sprite bgSprite))
+            if (!string.IsNullOrEmpty(line.background))
             {
-                // 如果背景图片换了，或者有背景相关的特效，可以通过特效字段触发
-                if (backgroundRenderer.sprite != bgSprite)
+                if (bgDict.TryGetValue(line.background, out Sprite bgSprite))
                 {
-                    backgroundRenderer.sprite = bgSprite;
-                }
-                
-                // 播放背景独立动画
-                if (!string.IsNullOrEmpty(currentBgEffect))
-                {
-                    Animator bgAnim = backgroundRenderer.GetComponent<Animator>();
-                    if (bgAnim != null)
+                    if (backgroundRenderer.sprite != bgSprite)
                     {
-                        bgAnim.Play(currentBgEffect, 0, 0f);
+                        backgroundRenderer.sprite = bgSprite;
                     }
                 }
+                else
+                {
+                    Debug.LogWarning("无法从素材库中找到背景图片映射: " + line.background);
+                }
             }
-            else
+            
+            // 播放背景独立动画 (就算这行没有填新背景图，也能给留在场上的当前背景播放特效)
+            if (!string.IsNullOrEmpty(currentBgEffect))
             {
-                Debug.LogWarning("无法从素材库中找到背景图片映射: " + line.background);
+                Animator bgAnim = backgroundRenderer.GetComponent<Animator>();
+                if (bgAnim != null)
+                {
+                    bgAnim.Play(currentBgEffect, 0, 0f);
+                }
             }
         }
 
@@ -515,12 +540,28 @@ public class DialogueManager : MonoBehaviour
         currentState = DialogueState.Suspended;
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
         
-        // 记录回来后需要从哪一句开始
-        if (!string.IsNullOrEmpty(currentLine.nextID))
+        // 连同名字文本的框一起隐藏（如果它的父物体是名字框底图，也一起隐藏）
+        if (nameText != null)
         {
-            PlayerPrefs.SetString("ResumeDialogueID", currentLine.nextID);
-            PlayerPrefs.Save();
+            nameText.gameObject.SetActive(false);
+            if (nameText.transform.parent != null && nameText.transform.parent != dialoguePanel.transform)
+            {
+                nameText.transform.parent.gameObject.SetActive(false);
+            }
         }
+        
+        // 隐藏场上的立绘，保持交互事件时的画面纯净
+        if (leftRenderer != null) leftRenderer.gameObject.SetActive(false);
+        if (centerRenderer != null) centerRenderer.gameObject.SetActive(false);
+        if (rightRenderer != null) rightRenderer.gameObject.SetActive(false);
+        
+        // 记录回来后需要从哪一句开始（如果没有填nextID，默认按当前ID+1接续）
+        string nextToResume = string.IsNullOrEmpty(currentLine.nextID) 
+            ? (int.Parse(currentLine.id) + 1).ToString() 
+            : currentLine.nextID;
+
+        PlayerPrefs.SetString("ResumeDialogueID", nextToResume);
+        PlayerPrefs.Save();
     }
 
     // 解析并执行事件
@@ -535,16 +576,42 @@ public class DialogueManager : MonoBehaviour
         }
         else 
         {
-            // 按照你的思路：如果在事件栏填的是脚本/物体名称，我们直接在场景里找同名的游戏物体
-            GameObject eventObj = GameObject.Find(eventParams);
+            GameObject eventObj = null;
+            GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+            
+            // 【新功能】支持参数传递：如果事件填的是 TaskSystem:01
+            string targetName = eventParams.Trim();
+            string eventArg = "";
+            if (targetName.Contains(":"))
+            {
+                int colonIndex = targetName.IndexOf(':');
+                eventArg = targetName.Substring(colonIndex + 1).Trim();
+                targetName = targetName.Substring(0, colonIndex).Trim();
+            }
+
+            foreach (GameObject obj in allObjects)
+            {
+                if (obj.name.Equals(targetName, System.StringComparison.OrdinalIgnoreCase) && obj.scene.IsValid())
+                {
+                    eventObj = obj;
+                    break;
+                }
+            }
+
             if (eventObj != null)
             {
-                // 发送信号，自动调用该物体身上任意脚本里的 "StartInteraction" 方法
-                eventObj.SendMessage("StartInteraction", SendMessageOptions.DontRequireReceiver);
+                Debug.Log($"成功找到交互物体 [{eventObj.name}]，正在唤醒...");
+                eventObj.SetActive(true); 
+                
+                // 如果带了参数，就发送带参数的方法；如果没有，就照旧
+                if (string.IsNullOrEmpty(eventArg))
+                    eventObj.SendMessage("StartInteraction", SendMessageOptions.DontRequireReceiver);
+                else
+                    eventObj.SendMessage("StartInteraction", eventArg, SendMessageOptions.DontRequireReceiver);
             }
             else
             {
-                Debug.LogWarning("找不到名为 [" + eventParams + "] 的游戏物体，无法执行对应事件！");
+                Debug.LogWarning("找不到名为 [" + targetName + "] 的游戏物体，无法执行对应事件！请检查物体名字是否拼写完全一致。");
             }
         }
     }
@@ -554,11 +621,24 @@ public class DialogueManager : MonoBehaviour
     {
         if (currentState == DialogueState.Suspended)
         {
+            // 恢复对话框和名字显示
+            if (dialoguePanel != null) dialoguePanel.SetActive(true);
+            if (nameText != null)
+            {
+                nameText.gameObject.SetActive(true);
+                if (nameText.transform.parent != null) nameText.transform.parent.gameObject.SetActive(true);
+            }
+
             string resumeID = PlayerPrefs.GetString("ResumeDialogueID", "");
             if (!string.IsNullOrEmpty(resumeID))
             {
                 PlayerPrefs.DeleteKey("ResumeDialogueID");
                 PlayLine(resumeID);
+            }
+            else
+            {
+                // 如果实在没找到跳转标记，做个容错往下走
+                ContinueDialogue();
             }
         }
     }
@@ -574,21 +654,21 @@ public class DialogueManager : MonoBehaviour
 // 存放每行数据的类
 public class DialogueLine
 {
-    public string type;         // 类型：#, CHOICE, EVENT, COND
-    public string id;           // 唯一标识
-    public string charName;     // 角色名称
-    public string position;     // 立绘位置
-    public string content;      // 对话内容/选项文案
-    public string nextID;       // 跳转目标
-    public string effect;       // 特效/表现 (人物)
-    public string sound;        // 音效
-    public string background;   // 背景图
-    public string promptUI;     // 提示界面预制体名
-    public string variable;     // 影响的变量/条件
-    public string expression;   // 立绘差分
-    public string chapter;      // 章节序号
-    public string eventParams;  // 事件参数 (如 LoadScene:Puzzle1)
-    public string bgEffect;     // 背景动画特效
+    public string type;         // 标志 (0)
+    public string id;           // ID (1)
+    public string charName;     // 人物 (2)
+    public string expression;   // 立绘 (3)
+    public string position;     // 位置 (4)
+    public string content;      // 内容 (5)
+    public string nextID;       // 跳转 (6)
+    public string bgEffect;     // 背景效果 (7)
+    public string effect;       // 效果 (8)
+    public string sound;        // 音效 (9)
+    public string bgm;          // 背景音 (10)
+    public string background;   // 背景 (11)
+    public string variable;     // 变量 (12)
+    public string chapter;      // 章节 (13)
+    public string eventParams;  // 事件 (14)
 }
 
 public enum DialogueState
