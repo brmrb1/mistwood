@@ -18,6 +18,12 @@ public class InteractManager : MonoBehaviour
             Destroy(gameObject);
     }
 
+    // 兼容有无参数的调用
+    public void StartInteraction()
+    {
+        StartInteraction("默认交互");
+    }
+
     // 从 DialogueManager 接收到事件时开启交互界面
     public void StartInteraction(string interactName)
     {
