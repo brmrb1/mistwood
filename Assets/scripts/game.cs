@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 public class Drag2DSprite : MonoBehaviour
 {
+    private Vector3 startPos;
 
     private void Start()
     {

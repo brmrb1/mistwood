@@ -25,10 +25,31 @@ public class UpInteractEvent : MonoBehaviour
     private int originalSpriteOrder;
     private string originalSpriteLayer;
 
+    [Header("视觉效果")]
+    [Tooltip("忽明忽暗的速度")]
+    public float pulseSpeed = 3f;
+    [Tooltip("忽明忽暗的最低亮度/透明度倍率 (0~1)")]
+    public float minPulse = 0.5f;
+    
+    private Graphic myGraphic;
+    private Color originalSpriteColor = Color.white;
+    private Color originalGraphicColor = Color.white;
+
+    // 记录是否是自己动态添加的 Canvas 和 Raycaster
+    private bool addedCanvasDynamically = false;
+    private bool addedRaycasterDynamically = false;
+
     private void Awake()
     {
         // 记录原始缩放值
         originalScale = transform.localScale;
+
+        // 获取并记录原始颜色
+        mySprite = GetComponent<SpriteRenderer>();
+        if (mySprite != null) originalSpriteColor = mySprite.color;
+
+        myGraphic = GetComponent<Graphic>();
+        if (myGraphic != null) originalGraphicColor = myGraphic.color;
     }
 
     // 由 DialogueManager 唤醒
@@ -38,39 +59,44 @@ public class UpInteractEvent : MonoBehaviour
         gameObject.SetActive(true);
         isScaled = true;
 
-        // 2. 动态添加或获取 Canvas 组件，强行把该物体拔高到屏幕最前方
-        myCanvas = GetComponent<Canvas>();
-        if (myCanvas == null) 
+        // 2. 对于 UI 元素，动态添加或获取 Canvas 组件
+        if (GetComponent<RectTransform>() != null)
         {
-            myCanvas = gameObject.AddComponent<Canvas>();
-            // 添加 Canvas 后，需要 GraphicRaycaster 才能独立接收点击事件
-            raycaster = gameObject.AddComponent<GraphicRaycaster>(); 
+            myCanvas = GetComponent<Canvas>();
+            if (myCanvas == null) 
+            {
+                myCanvas = gameObject.AddComponent<Canvas>();
+                addedCanvasDynamically = true; // 标记是动态加的
+                // 添加 Canvas 后，需要 GraphicRaycaster 才能独立接收点击事件
+                raycaster = gameObject.AddComponent<GraphicRaycaster>(); 
+                addedRaycasterDynamically = true;
+            }
+
+            // 保存原有的渲染层级信息
+            originalOverrideSorting = myCanvas.overrideSorting;
+            originalSortingLayerName = myCanvas.sortingLayerName;
+            originalSortingOrder = myCanvas.sortingOrder;
+
+            // 设置为覆盖层级，并且设为UI层级和巨大的数字保证在最上面
+            myCanvas.overrideSorting = true;
+            myCanvas.sortingLayerName = "UI";
+            myCanvas.sortingOrder = 10; 
         }
 
-        // 保存原有的渲染层级信息
-        originalOverrideSorting = myCanvas.overrideSorting;
-        originalSortingLayerName = myCanvas.sortingLayerName;
-        originalSortingOrder = myCanvas.sortingOrder;
-
-        // 设置为覆盖层级，并且设为UI层级和巨大的数字保证在最上面
-        myCanvas.overrideSorting = true;
-        myCanvas.sortingLayerName = "UI";
-        myCanvas.sortingOrder = 10; 
-
-        // 尝试获取SpriteRenderer并提升层级，防止是2D精灵的情况被挡住
+        // 3. 对于 2D 游戏物体，尝试获取SpriteRenderer并提升层级
         mySprite = GetComponent<SpriteRenderer>();
         if (mySprite != null)
         {
             originalSpriteOrder = mySprite.sortingOrder;
             originalSpriteLayer = mySprite.sortingLayerName;
             mySprite.sortingLayerName = "UI";
-            mySprite.sortingOrder = 999;
+            mySprite.sortingOrder = 1;
         }
 
-        // 3. 放大物体
+        // 4. 放大物体
         transform.localScale = originalScale * scaleMultiplier;
 
-        // 4. 显示对应的提示图片/文字
+        // 5. 显示对应的提示图片/文字
         if (promptUI != null)
         {
             promptUI.SetActive(true);
@@ -85,12 +111,6 @@ public class UpInteractEvent : MonoBehaviour
         if (!isScaled) return;
         
         isScaled = false;
-        
-        // 1. 隐藏提示图片
-        if (promptUI != null)
-        {
-            promptUI.SetActive(false);
-        }
 
         // 2. 恢复原来大小
         transform.localScale = originalScale;
@@ -98,25 +118,50 @@ public class UpInteractEvent : MonoBehaviour
         // 3. 恢复原来的渲染层级
         if (myCanvas != null)
         {
-            myCanvas.sortingOrder = originalSortingOrder;
-            myCanvas.sortingLayerName = originalSortingLayerName;
-            myCanvas.overrideSorting = originalOverrideSorting;
+            if (addedCanvasDynamically)
+            {
+                // 如果是动态添加的，为了不影响原本其他系统的判定，我们在结束时销毁它
+                if (raycaster != null) Destroy(raycaster);
+                Destroy(myCanvas);
+            }
+            else
+            {
+                // 否则只是恢复之前的数值
+                myCanvas.sortingOrder = originalSortingOrder;
+                myCanvas.sortingLayerName = originalSortingLayerName;
+                myCanvas.overrideSorting = originalOverrideSorting;
+            }
         }
         
         if (mySprite != null)
         {
             mySprite.sortingOrder = originalSpriteOrder;
             mySprite.sortingLayerName = originalSpriteLayer;
+            mySprite.color = originalSpriteColor;
         }
 
-        // 4. 恢复剧情（使用协程延迟一帧，防止点击穿透）
-        StartCoroutine(ResumeDialogueDelay());
+        if (myGraphic != null)
+        {
+            myGraphic.color = originalGraphicColor;
+        }
+
+        // 4. 恢复剧情（把协程交给一直存活的 DialogueManager 来运行，防止自己被隐藏后卡死）
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.Instance.StartCoroutine(ResumeDialogueRoutine());
+        }
+
+        // 1. 最后再隐藏提示图片（防止 promptUI 就是自己导致物体被干掉，协程跑不起来）
+        if (promptUI != null)
+        {
+            promptUI.SetActive(false);
+        }
 
         Debug.Log($"【{gameObject.name}】结束放大事项，恢复原状并继续剧情。");
     }
 
     // 延迟一帧恢复对话，这是为了消化掉当前那一帧玩家点鼠标的输入动作
-    private System.Collections.IEnumerator ResumeDialogueDelay()
+    private System.Collections.IEnumerator ResumeDialogueRoutine()
     {
         yield return null; 
         if (DialogueManager.Instance != null)
@@ -127,10 +172,30 @@ public class UpInteractEvent : MonoBehaviour
 
     private void Update()
     {
-        // 如果当前处于放大状态，并且玩家按下了鼠标左键（或触屏）
-        if (isScaled && Input.GetMouseButtonDown(0))
+        // 如果当前处于放大状态
+        if (isScaled)
         {
-            FinishInteraction();
+            // 忽明忽暗效果演算（基于时间和PingPong实现来回过渡）
+            float pulseValue = Mathf.Lerp(minPulse, 1f, Mathf.PingPong(Time.time * pulseSpeed, 1f));
+
+            if (mySprite != null)
+            {
+                Color c = originalSpriteColor;
+                c.r *= pulseValue; c.g *= pulseValue; c.b *= pulseValue; // 降低RGB亮度
+                mySprite.color = c;
+            }
+            if (myGraphic != null)
+            {
+                Color c = originalGraphicColor;
+                c.r *= pulseValue; c.g *= pulseValue; c.b *= pulseValue; // 降低RGB亮度
+                myGraphic.color = c;
+            }
+
+            // 如果玩家按下了鼠标左键（或触屏）
+            if (Input.GetMouseButtonDown(0))
+            {
+                FinishInteraction();
+            }
         }
     }
 }

@@ -225,7 +225,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     // 绑定至：UI上下拉菜单 (Dropdown) 的 On Value Changed (Int) 事件
-    // 假设你的下拉菜单 (Options) 顺序设置为： 0: 1x,  1: 2x,  2: 4x
+    // 假设你的下拉菜单 (Options) 顺序设置为： 0: 1x,  1: 2x,  2: 10x
     public void OnSpeedDropdownChanged(int index)
     {
         switch (index)
@@ -237,7 +237,7 @@ public class DialogueManager : MonoBehaviour
                 currentSpeedMultiplier = 2.0f;
                 break;
             case 2:
-                currentSpeedMultiplier = 4.0f;
+                currentSpeedMultiplier = 10.0f;
                 break;
             default:
                 currentSpeedMultiplier = 1.0f;

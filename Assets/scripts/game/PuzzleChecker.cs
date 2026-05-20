@@ -251,6 +251,7 @@ public class PuzzleChecker : MonoBehaviour
             SpawnTextFeedback(correctTypeCount, correctFormCount);
 
             if (successPanel != null) successPanel.SetActive(true);
+
             return; // 胜出了就不再执行后面的下移操作
         }
 
@@ -322,14 +323,80 @@ public class PuzzleChecker : MonoBehaviour
         }
     }
 
-    // 【新增】重新开始游戏，绑定给“重新开始按钮”的 OnClick 事件
+    // 【新增】胜利后点击确认按钮，结束事件恢复剧情
+    public void OnSuccessConfirm()
+    {
+        if (successPanel != null) successPanel.SetActive(false);
+        
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.Instance.ResumeFromSuspended();
+        }
+    }
+
+    // 【修改】重新开始游戏，不重新加载场景，而是清除记录并让位置复原
     public void RestartGame()
     {
-        // 因为我们在拖拽脚本里用了静态字典，重新开始时必须清理一下！
-        dragright.StartNewRound(); 
+        if (failPanel != null) failPanel.SetActive(false);
+
+        // 1. 通知 dragright 清理和复位当前活动的拖拽物品
+        dragright.StartNewRound(); // 把刚才拖出去的归位
+        dragright.ResetAllToInitial(); // 重置所有的 successCount 等
+
+        // 2. 清除场上曾经所有克隆出来的摆放图案(拼图结果) 和 反馈文字/图片
+        List<Transform> parentsToClean = new List<Transform>();
+        if (scrollContent != null) parentsToClean.Add(scrollContent);
+        if (feedbackParent != null) parentsToClean.Add(feedbackParent);
+        if (textSpawnPos1 != null && textSpawnPos1.parent != null) parentsToClean.Add(textSpawnPos1.parent);
+        if (textSpawnPos2 != null && textSpawnPos2.parent != null) parentsToClean.Add(textSpawnPos2.parent);
         
-        // 重新加载当前场景，彻底重置一切
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        foreach (var ans in correctAnswers)
+        {
+            if (ans.targetSpawnPoint != null)
+                parentsToClean.Add(ans.targetSpawnPoint);
+        }
+
+        // 把所有 "(Clone)" 物体全部删掉
+        foreach (Transform p in parentsToClean)
+        {
+            if (p == null) continue;
+            for (int i = p.childCount - 1; i >= 0; i--)
+            {
+                Transform child = p.GetChild(i);
+                if (child.name.Contains("(Clone)"))
+                {
+                    Destroy(child.gameObject);
+                }
+            }
+        }
+
+        // 3. 把被下移的工作区移回原位
+        if (transformsToShiftDown != null)
+        {
+            foreach (var t in transformsToShiftDown)
+            {
+                if (t != null)
+                {
+                    t.position -= roundOffset * currentAttempt;
+                }
+            }
+        }
+
+        // 4. 重置文本滑动框的长度
+        if (scrollContent != null)
+        {
+            scrollContent.sizeDelta = new Vector2(scrollContent.sizeDelta.x, initialContentHeight);
+        }
+
+        // 5. 清除现有的 currentFb1 和 2 引用
+        if (currentFb1 != null) Destroy(currentFb1);
+        if (currentFb2 != null) Destroy(currentFb2);
+
+        // 6. 清理历史存档数据
+        historyData.rounds.Clear();
+        currentAttempt = 0;
+        
+        Debug.Log("已重置拼图记录，重新开始挑战！");
     }
 
     private void SpawnTextFeedback(int typeCount, int doseCount)
