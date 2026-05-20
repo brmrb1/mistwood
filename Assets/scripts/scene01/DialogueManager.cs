@@ -46,6 +46,9 @@ public class DialogueManager : MonoBehaviour
     private bool isAutoPlaying = false;      // 当前是否处于自动播放状态
     private float currentSpeedMultiplier = 1.0f; // 播放速度倍率 (用于快进，1.0为正常)
 
+    [Header("多剧本支持库 (Inspector拖拽)")]
+    public List<TextAsset> overrideCsvList = new List<TextAsset>(); // 把新的csv（如new 2）拖入这里
+
     private Dictionary<string, DialogueLine> dialogueDict = new Dictionary<string, DialogueLine>();
     private DialogueState currentState = DialogueState.Waiting;
     private DialogueLine currentLine;
@@ -95,6 +98,20 @@ public class DialogueManager : MonoBehaviour
         // 游戏开始时默认隐藏速度调节菜单
         if (speedDropdownObj != null) speedDropdownObj.SetActive(false);
 
+        // 检查是否有跨场景/跨 CSV 跳转的指示
+        string resumeCSV = PlayerPrefs.GetString("ResumeCSVName", "");
+        if (!string.IsNullOrEmpty(resumeCSV))
+        {
+            // 如果有指定且列表里存在同名 CSV，就覆盖当前 csvFile
+            TextAsset targetCsv = overrideCsvList.Find(x => x.name == resumeCSV);
+            if (targetCsv != null)
+            {
+                csvFile = targetCsv;
+            }
+            // 消费掉，防止影响以后正常的开始
+            PlayerPrefs.DeleteKey("ResumeCSVName");
+        }
+
         if (csvFile != null)
         {
             LoadCSV(csvFile.text);
@@ -117,12 +134,29 @@ public class DialogueManager : MonoBehaviour
     private void Update()
     {
         // 监听鼠标左键点击，或者手机触屏
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
         {
             // 检查点击位置是否在 UI 按钮上，如果在 UI 按钮上，就交给按钮自身处理
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            if (EventSystem.current != null)
             {
-                return;
+                bool isPointerOverUI = false;
+
+                // 兼容电脑端鼠标事件
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    isPointerOverUI = true;
+                }
+
+                // 兼容手机端触摸事件 (包含 Unity 编辑器内的 Device Simulator)
+                if (Input.touchCount > 0 && EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+                {
+                    isPointerOverUI = true;
+                }
+
+                if (isPointerOverUI)
+                {
+                    return;
+                }
             }
 
             // 只允许点击屏幕快进正在播放的打字，不允许点击屏幕跳到下一句...
@@ -576,7 +610,23 @@ public class DialogueManager : MonoBehaviour
 
         if (eventParams.StartsWith("LoadScene:"))
         {
-            string sceneName = eventParams.Substring(10); // 截取之后的字符串
+            string sceneStr = eventParams.Substring(10); // 截取之后的字符串
+            string sceneName = sceneStr;
+
+            // 支持形如 "LoadScene:guide|new 2" 的格式，用来在跳转场景后强行指定要读取的新 CSV 文件名
+            if (sceneStr.Contains("|"))
+            {
+                string[] parts = sceneStr.Split('|');
+                sceneName = parts[0];
+                string nextCsvName = parts[1];
+                
+                // 将要读取的新 CSV 文件名存下来
+                PlayerPrefs.SetString("ResumeCSVName", nextCsvName);
+                
+                // 跳转新剧本后通常默认从 0 行开始
+                PlayerPrefs.SetString("ResumeDialogueID", "0"); 
+            }
+
             SceneManager.LoadScene(sceneName);
         }
         else 

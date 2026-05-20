@@ -17,8 +17,13 @@ public class UpInteractEvent : MonoBehaviour
     private Canvas myCanvas;
     private int originalSortingOrder;
     private bool originalOverrideSorting;
+    private string originalSortingLayerName;
     private GraphicRaycaster raycaster;
     private bool isScaled = false; // 用于标记当前是否处于被放大的互动状态
+    
+    private SpriteRenderer mySprite;
+    private int originalSpriteOrder;
+    private string originalSpriteLayer;
 
     private void Awake()
     {
@@ -44,11 +49,23 @@ public class UpInteractEvent : MonoBehaviour
 
         // 保存原有的渲染层级信息
         originalOverrideSorting = myCanvas.overrideSorting;
+        originalSortingLayerName = myCanvas.sortingLayerName;
         originalSortingOrder = myCanvas.sortingOrder;
 
-        // 设置为覆盖层级，并且设为一个巨大的数字保证在最上面
+        // 设置为覆盖层级，并且设为UI层级和巨大的数字保证在最上面
         myCanvas.overrideSorting = true;
-        myCanvas.sortingOrder = 999; 
+        myCanvas.sortingLayerName = "UI";
+        myCanvas.sortingOrder = 10; 
+
+        // 尝试获取SpriteRenderer并提升层级，防止是2D精灵的情况被挡住
+        mySprite = GetComponent<SpriteRenderer>();
+        if (mySprite != null)
+        {
+            originalSpriteOrder = mySprite.sortingOrder;
+            originalSpriteLayer = mySprite.sortingLayerName;
+            mySprite.sortingLayerName = "UI";
+            mySprite.sortingOrder = 999;
+        }
 
         // 3. 放大物体
         transform.localScale = originalScale * scaleMultiplier;
@@ -82,7 +99,14 @@ public class UpInteractEvent : MonoBehaviour
         if (myCanvas != null)
         {
             myCanvas.sortingOrder = originalSortingOrder;
+            myCanvas.sortingLayerName = originalSortingLayerName;
             myCanvas.overrideSorting = originalOverrideSorting;
+        }
+        
+        if (mySprite != null)
+        {
+            mySprite.sortingOrder = originalSpriteOrder;
+            mySprite.sortingLayerName = originalSpriteLayer;
         }
 
         // 4. 恢复剧情（使用协程延迟一帧，防止点击穿透）
