@@ -25,6 +25,8 @@ public class TaskSystem : MonoBehaviour
     }
     private Dictionary<string, TaskData> taskDict = new Dictionary<string, TaskData>();
 
+    private float enableTime;
+
     private void Awake()
     {
         LoadTaskCSV();
@@ -59,6 +61,7 @@ public class TaskSystem : MonoBehaviour
     // 由 DialogueManager 唤醒时调用（带参数）
     public void StartInteraction(string taskID)
     {
+        enableTime = Time.time;
         Debug.Log("【TaskSystem】接收到任务指令, ID: " + taskID);
 
         // 如果传过来的指令是 Clear，意思是玩家完成任务了，我们要清空常驻UI
@@ -67,7 +70,10 @@ public class TaskSystem : MonoBehaviour
             persistentPanel.SetActive(false);
             gameObject.SetActive(false); 
             // 恢复剧情对话
-            if (DialogueManager.Instance != null) DialogueManager.Instance.ResumeFromSuspended();
+            if (DialogueManager.Instance != null) 
+            {
+                DialogueManager.Instance.StartCoroutine(ResumeDialogueRoutine());
+            }
             return;
         }
 
@@ -87,7 +93,10 @@ public class TaskSystem : MonoBehaviour
         else
         {
             Debug.LogWarning("【TaskSystem】在任务CSV里找不到对应的任务ID: " + taskID);
-            if (DialogueManager.Instance != null) DialogueManager.Instance.ResumeFromSuspended(); // 找不到就跳过
+            if (DialogueManager.Instance != null)
+            {
+                DialogueManager.Instance.StartCoroutine(ResumeDialogueRoutine());
+            }
         }
     }
 
@@ -100,7 +109,16 @@ public class TaskSystem : MonoBehaviour
         // 2. 显示右上角的常驻任务提示
         if (persistentPanel != null) persistentPanel.SetActive(true);
 
-        // 3. 告诉对话系统：弹窗看完了，你可以继续推进剧情了！（但我的常驻UI由于不受你管，会一直亮着）
+        // 3. 告诉对话系统：延迟一帧恢复剧情
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.Instance.StartCoroutine(ResumeDialogueRoutine());
+        }
+    }
+
+    private System.Collections.IEnumerator ResumeDialogueRoutine()
+    {
+        yield return null;
         if (DialogueManager.Instance != null)
         {
             DialogueManager.Instance.ResumeFromSuspended();
@@ -109,8 +127,8 @@ public class TaskSystem : MonoBehaviour
 
     private void Update()
     {
-        // 如果中间的弹窗正在显示，玩家点了屏幕，就当作确认
-        if (popupPanel != null && popupPanel.activeInHierarchy && Input.GetMouseButtonDown(0))
+        // 增设 0.1 秒前摇保护
+        if (popupPanel != null && popupPanel.activeInHierarchy && Input.GetMouseButtonDown(0) && Time.time - enableTime > 0.1f)
         {
             OnClickPopupComplete();
         }

@@ -25,7 +25,16 @@ public class CommonInteractEvent : MonoBehaviour
         // 如果 inspector 面板里拖拽了其他要触发的物体和方法，在这里激活（供后续拓展）
         onInteractFinished?.Invoke();
 
-        // 告诉对话系统：事件结束，恢复之前的对话！
+        // 告诉对话系统：事件结束，延迟一帧恢复之前的对话
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.Instance.StartCoroutine(ResumeDialogueRoutine());
+        }
+    }
+
+    private System.Collections.IEnumerator ResumeDialogueRoutine()
+    {
+        yield return null;
         if (DialogueManager.Instance != null)
         {
             DialogueManager.Instance.ResumeFromSuspended();

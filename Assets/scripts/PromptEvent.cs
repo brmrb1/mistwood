@@ -12,12 +12,14 @@ public class PromptEvent : MonoBehaviour
     
     private List<string> linesData = new List<string>();
     private int currentIndex = 0;
+    private float enableTime;
 
     // 被对话管理器自动呼叫的启动入口
     public void StartInteraction()
     {
         Debug.Log("【PromptEvent】多段提示事件开始！");
         gameObject.SetActive(true);
+        enableTime = Time.time;
         
         // 每次启动时重新读取一遍 CSV
         LoadCSV();
@@ -62,7 +64,8 @@ public class PromptEvent : MonoBehaviour
     private void Update()
     {
         // 如果这个提示面板在显示，并且玩家按下了鼠标/点了屏幕，就下一句
-        if (gameObject.activeInHierarchy && Input.GetMouseButtonDown(0))
+        // 增加0.1秒的CD缓冲期，防止由于同帧/短时间内的连点导致新出来的面板被瞬间穿透点掉
+        if (gameObject.activeInHierarchy && Input.GetMouseButtonDown(0) && Time.time - enableTime > 0.1f)
         {
             // 延迟一点点防止点出来的瞬间就被当成点屏幕了
             currentIndex++;
@@ -96,6 +99,16 @@ public class PromptEvent : MonoBehaviour
         gameObject.SetActive(false); // 隐藏提示面板
         
         // 恢复主干对话剧情
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.Instance.StartCoroutine(ResumeDialogueRoutine());
+        }
+    }
+
+    // 延迟一帧恢复对话，防止当前帧的点击继续传导给下一个刚出现的物体
+    private System.Collections.IEnumerator ResumeDialogueRoutine()
+    {
+        yield return null;
         if (DialogueManager.Instance != null)
         {
             DialogueManager.Instance.ResumeFromSuspended();

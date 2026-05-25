@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/guide.unity
     guid: 77543eac74f83444680d15f9fe2df981
+  - enabled: 1
+    path: Assets/Scenes/seta.unity
+    guid: fe0c21b75e9ec86408f8292d7f69443f
+  - enabled: 1
+    path: Assets/Scenes/gameseta.unity
+    guid: e0edb352b39a79449b4fe54c8095e260
   m_configObjects: {}
