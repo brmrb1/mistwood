@@ -4405,6 +4405,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.data[0]
       value: 
       objectReference: {fileID: 4900000, guid: 0167d65c017a6c641b7807c0edc22538, type: 3}

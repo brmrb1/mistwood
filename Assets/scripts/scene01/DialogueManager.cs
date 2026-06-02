@@ -22,6 +22,11 @@ public class DialogueManager : MonoBehaviour
     public SpriteRenderer centerRenderer;     // 中间立绘站位
     public SpriteRenderer rightRenderer;      // 右侧立绘站位
 
+    [Header("选项表现引用")]
+    public GameObject optionsPanel;      // 包含选项的面板 (父节点)
+    public GameObject optionButtonPrefab;// 单个选项按钮的预制体 (需带Button组件和TextMeshProUGUI子节点)
+    private List<GameObject> activeOptions = new List<GameObject>(); // 记录当前生成的选项按钮
+
     [Header("素材映射库 (Inspector拖拽)")]
     public List<SpriteMapping> backgroundLibrary = new List<SpriteMapping>();
     public List<SpriteMapping> characterLibrary = new List<SpriteMapping>();
@@ -66,11 +71,13 @@ public class DialogueManager : MonoBehaviour
             // 初始化映射字典
             foreach (var item in backgroundLibrary)
             {
-                if (!bgDict.ContainsKey(item.key)) bgDict.Add(item.key, item.sprite);
+                string safeKey = (item.key ?? "").Trim().ToLower();
+                if (!bgDict.ContainsKey(safeKey)) bgDict.Add(safeKey, item.sprite);
             }
             foreach (var item in characterLibrary)
             {
-                if (!charDict.ContainsKey(item.key)) charDict.Add(item.key, item.sprite);
+                string safeKey = (item.key ?? "").Replace(" ", "").Replace(" ", "").Replace("　", "").Trim();
+                if (!charDict.ContainsKey(safeKey)) charDict.Add(safeKey, item.sprite);
             }
             foreach (var item in audioLibrary)
             {
@@ -362,14 +369,77 @@ public class DialogueManager : MonoBehaviour
         }
         else if (currentLine.type == "CHOICE")
         {
-            // 选项逻辑：遇到选项同样需要停止自动播放，等待玩家做选择
+            // 选项逻辑：停止自动播放，等待玩家做选择
             isAutoPlaying = false;
             if (speedDropdownObj != null) speedDropdownObj.SetActive(false);
             
             currentState = DialogueState.Choosing;
-            Debug.Log("生成选项：" + currentLine.content + " -> 点击跳转：" + currentLine.nextID);
-            // TODO: 生成 UI Button 并绑定 OnClick 逻辑 ->  PlayLine(currentLine.nextID);
+
+            // 清理旧的选项按钮
+            foreach (var btn in activeOptions)
+            {
+                Destroy(btn);
+            }
+            activeOptions.Clear();
+
+            // 分割选项：使用 Content 存放选项文字，NextID 存放跳转 ID，用竖线 "|" 分割
+            string[] choicesText = currentLine.content.Split('|');
+            string[] choicesTarget = currentLine.nextID.Split('|');
+
+            // 激活选项面板
+            if (optionsPanel != null) optionsPanel.SetActive(true);
+
+            for (int i = 0; i < choicesText.Length && i < choicesTarget.Length; i++)
+            {
+                string targetId = choicesTarget[i].Trim();
+                string btnText = choicesText[i].Trim();
+
+                if (optionButtonPrefab != null && optionsPanel != null)
+                {
+                    GameObject btnObj = Instantiate(optionButtonPrefab, optionsPanel.transform);
+                    btnObj.SetActive(true);
+                    activeOptions.Add(btnObj);
+
+                    // 寻找并设置文本 (由于可能是 Button 或是子节点的 Text/TMP_Text)
+                    TMP_Text t = btnObj.GetComponentInChildren<TMP_Text>();
+                    if (t != null) t.text = btnText;
+                    else
+                    {
+                        Text legacyText = btnObj.GetComponentInChildren<Text>();
+                        if (legacyText != null) legacyText.text = btnText;
+                    }
+
+                    // 绑定按钮事件
+                    Button btnInfo = btnObj.GetComponent<Button>();
+                    if (btnInfo != null)
+                    {
+                        btnInfo.onClick.AddListener(() =>
+                        {
+                            OnChoiceSelected(targetId);
+                        });
+                    }
+                }
+                else
+                {
+                    Debug.Log($"生成选项：{btnText} -> 跳转：{targetId} (无UI预制体，仅打印)");
+                }
+            }
         }
+    }
+
+    // 处理玩家点击选项
+    public void OnChoiceSelected(string targetId)
+    {
+        // 隐藏选项面板并销毁按钮
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+        foreach (var btn in activeOptions)
+        {
+            Destroy(btn);
+        }
+        activeOptions.Clear();
+
+        // 跳转到选择的剧情线
+        PlayLine(targetId);
     }
 
     // 下一句
@@ -416,8 +486,15 @@ public class DialogueManager : MonoBehaviour
         {
             if (!string.IsNullOrEmpty(line.background))
             {
-                if (bgDict.TryGetValue(line.background, out Sprite bgSprite))
+                string safeBg = line.background.Trim().ToLower();
+                if (bgDict.TryGetValue(safeBg, out Sprite bgSprite))
                 {
+                    // 确保背景物体是激活状态
+                    if (!backgroundRenderer.gameObject.activeSelf)
+                    {
+                        backgroundRenderer.gameObject.SetActive(true);
+                    }
+
                     if (backgroundRenderer.sprite != bgSprite)
                     {
                         backgroundRenderer.sprite = bgSprite;
@@ -425,7 +502,7 @@ public class DialogueManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning("无法从素材库中找到背景图片映射: " + line.background);
+                    Debug.LogWarning("无法从素材库中找到背景图片映射: [" + line.background + "]");
                 }
             }
             
@@ -476,9 +553,10 @@ public class DialogueManager : MonoBehaviour
             {
                 if (i >= expressions.Length) break;
 
-                string spriteName = expressions[i]; 
+                string spriteName = expressions[i];
+                string safeSpriteName = (spriteName ?? "").Replace(" ", "").Replace(" ", "").Replace("　", "");
                 
-                if (charDict.TryGetValue(spriteName, out Sprite charSprite))
+                if (charDict.TryGetValue(safeSpriteName, out Sprite charSprite))
                 {
                     string pos = positions[i].ToLower();
                     SpriteRenderer targetRenderer = null;

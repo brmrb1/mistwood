@@ -2675,6 +2675,10 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.data[0]
       value: 
       objectReference: {fileID: 4900000, guid: 0167d65c017a6c641b7807c0edc22538, type: 3}
@@ -2687,13 +2691,37 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4900000, guid: 21e993961d760d245b9266a4c7b073bc, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
-      propertyPath: characterLibrary.Array.data[3].key
-      value: seta
+      propertyPath: characterLibrary.Array.data[0].key
+      value: "\_\u585E\u5854\uFF08\u80C6\u602F\uFF09 "
       objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[1].key
+      value: "\u8212\u60A6\u6749\uFF08\u7591\u60D1\uFF09 "
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[2].key
+      value: "\u8212\u60A6\u6749\uFF08\u5E73\u9759\uFF09 "
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[3].key
+      value: "\u96EA\u514B\uFF08\u6B63\u5E38\uFF09 "
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f68908dd5e28c964681baf4110bb9055, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[1].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 566f2f7b6a6fc8e43ad840a610a160a4, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[2].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: bc503616093b77a4c9db8027dbdcac39, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.data[3].sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 0dd7a82157fb72d47aa5b1b143d5f53b, type: 3}
+      objectReference: {fileID: 21300000, guid: bfccd0b53cb061f4a9974d80ffac0671, type: 3}
     - target: {fileID: 4862182498318315052, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: m_Name
       value: duihua

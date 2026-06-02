@@ -1497,7 +1497,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: backgroundLibrary.Array.size
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.data[0]
@@ -1524,6 +1524,10 @@ PrefabInstance:
       value: nrm
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[8].key
+      value: jd
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: backgroundLibrary.Array.data[9].key
       value: jd
       objectReference: {fileID: 0}
@@ -1539,6 +1543,10 @@ PrefabInstance:
       propertyPath: characterLibrary.Array.data[5].sprite
       value: 
       objectReference: {fileID: 21300000, guid: d7288f763edbc4449a72ff6b95e2ef01, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[8].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c61aee6cc2f1c8d418a446f0139d5aa7, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: backgroundLibrary.Array.data[9].sprite
       value: 
