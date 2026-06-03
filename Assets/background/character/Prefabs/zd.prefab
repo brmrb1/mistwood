@@ -246,8 +246,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 0.6528301, g: 0.6528301, b: 0.6528301, a: 1}
+    m_PressedColor: {r: 0.4264151, g: 0.4264151, b: 0.4264151, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -1382,6 +1382,30 @@ PrefabInstance:
     - target: {fileID: 432598356845390724, guid: 4fed2a1ac253e684e895fa4c7837a981, type: 3}
       propertyPath: m_Name
       value: auto
+      objectReference: {fileID: 0}
+    - target: {fileID: 3236250285311521640, guid: 4fed2a1ac253e684e895fa4c7837a981, type: 3}
+      propertyPath: m_Colors.m_PressedColor.b
+      value: 0.4264151
+      objectReference: {fileID: 0}
+    - target: {fileID: 3236250285311521640, guid: 4fed2a1ac253e684e895fa4c7837a981, type: 3}
+      propertyPath: m_Colors.m_PressedColor.g
+      value: 0.4264151
+      objectReference: {fileID: 0}
+    - target: {fileID: 3236250285311521640, guid: 4fed2a1ac253e684e895fa4c7837a981, type: 3}
+      propertyPath: m_Colors.m_PressedColor.r
+      value: 0.4264151
+      objectReference: {fileID: 0}
+    - target: {fileID: 3236250285311521640, guid: 4fed2a1ac253e684e895fa4c7837a981, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.b
+      value: 0.6528301
+      objectReference: {fileID: 0}
+    - target: {fileID: 3236250285311521640, guid: 4fed2a1ac253e684e895fa4c7837a981, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.g
+      value: 0.6528301
+      objectReference: {fileID: 0}
+    - target: {fileID: 3236250285311521640, guid: 4fed2a1ac253e684e895fa4c7837a981, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.r
+      value: 0.6528301
       objectReference: {fileID: 0}
     - target: {fileID: 4626028297983554215, guid: 4fed2a1ac253e684e895fa4c7837a981, type: 3}
       propertyPath: m_Pivot.x
