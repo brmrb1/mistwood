@@ -82,7 +82,7 @@ SpriteRenderer:
   m_Size: {x: 16.4, y: 23.603092}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &9134440911640871879
@@ -521,6 +521,8 @@ MonoBehaviour:
   leftRenderer: {fileID: 8116699996870144899}
   centerRenderer: {fileID: 0}
   rightRenderer: {fileID: 973671908572683275}
+  optionsPanel: {fileID: 0}
+  optionButtonPrefab: {fileID: 0}
   backgroundLibrary:
   - key: bgllb
     sprite: {fileID: 21300000, guid: 8e34cda996a93e54eae6c9b6a6fa9f4f, type: 3}
@@ -826,7 +828,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 35.29, y: -0.0000048876}
+  m_AnchoredPosition: {x: 67, y: -0.0000048876}
   m_SizeDelta: {x: 170.58, y: 47.06}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6139669690685674696
@@ -1008,7 +1010,7 @@ SpriteRenderer:
   m_Size: {x: 16.4, y: 23.603092}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &2039358731584176458

@@ -1263,8 +1263,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 57, y: 238}
-  m_SizeDelta: {x: 1109.14, y: 848.87}
+  m_AnchoredPosition: {x: -1.63, y: -76.62}
+  m_SizeDelta: {x: 1173.87, y: 1286.76}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &728910882
 MonoBehaviour:
@@ -1342,7 +1342,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: aecc0831cbecaf447b4d840082f74c24, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1fc3393834633ab409130b491a2d1b6c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2733,7 +2733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2265934293317945759, guid: 0bccb9dad502ff948b442d22edadf6d9, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -909
+      value: -872
       objectReference: {fileID: 0}
     - target: {fileID: 2265934293317945759, guid: 0bccb9dad502ff948b442d22edadf6d9, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2811,7 +2811,7 @@ PrefabInstance:
       objectReference: {fileID: 531062291}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.size
-      value: 18
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.data[0].key
@@ -2862,8 +2862,20 @@ PrefabInstance:
       value: jgn
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[5].key
+      value: lcl
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[6].key
+      value: qj
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: backgroundLibrary.Array.data[7].key
       value: dm
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[8].key
+      value: desk
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.data[10].key
@@ -2896,6 +2908,14 @@ PrefabInstance:
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.data[17].key
       value: "\u7FA4\u4F17B\uFF08\u526A\u5F71\uFF09"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[18].key
+      value: "\u96EA\u514B\uFF08\u7591\u60D1\uFF09"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[19].key
+      value: "\u8212\u60A6\u6749\uFF08\u7591\u8651\uFF09"
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.data[0].sprite
@@ -2946,9 +2966,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: f9ed590dc266dfe4f9408ee904425461, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[5].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ef8632149dc297a40ba08aff684954f8, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[6].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: cfd59dbfe1643494690905b159c858e1, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: backgroundLibrary.Array.data[7].sprite
       value: 
       objectReference: {fileID: 21300000, guid: b1a4b558b20dc9a4eacd179f7f1573dc, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[8].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c9c7cff845a6bb844a487a92ebfeca3f, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.data[10].sprite
       value: 
@@ -2981,6 +3013,14 @@ PrefabInstance:
       propertyPath: characterLibrary.Array.data[17].sprite
       value: 
       objectReference: {fileID: 21300000, guid: 07ddd79c2d198b04a91d16977581c155, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[18].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: bfccd0b53cb061f4a9974d80ffac0671, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[19].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 566f2f7b6a6fc8e43ad840a610a160a4, type: 3}
     - target: {fileID: 4862182498318315052, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: m_Name
       value: duihua
