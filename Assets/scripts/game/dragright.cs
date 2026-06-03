@@ -171,6 +171,13 @@ public class dragright : MonoBehaviour
                 newlySpawned.transform.localScale = customSpawnScale;
             }
 
+            // 【修复层级溢出】如果生成的预制体自带 Canvas，且开启了 overrideSorting，将其关闭
+            Canvas canvasComp = newlySpawned.GetComponent<Canvas>();
+            if (canvasComp != null)
+            {
+                canvasComp.overrideSorting = false;
+            }
+
             FeedbackClickable clickable = newlySpawned.AddComponent<FeedbackClickable>();
             clickable.ownerDragright = this;
 
@@ -338,6 +345,13 @@ public class dragright : MonoBehaviour
                     else
                     {
                         newlySpawned.transform.localScale = customSpawnScale;
+                    }
+
+                    // 【修复层级溢出】如果生成的预制体自带 Canvas，且开启了 overrideSorting，将其关闭，以便它能被 ScrollView 正确遮罩
+                    Canvas canvasComp = newlySpawned.GetComponent<Canvas>();
+                    if (canvasComp != null)
+                    {
+                        canvasComp.overrideSorting = false;
                     }
 
                     // 【新增：使其可点击】为实例生成的图片添加点击组件，并传给它当前这个拖拽物体

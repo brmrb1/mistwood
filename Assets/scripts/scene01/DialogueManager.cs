@@ -549,16 +549,21 @@ public class DialogueManager : MonoBehaviour
             string[] positions = line.position.Split('|');
             string[] expressions = line.expression.Split('|');
 
-            for (int i = 0; i < positions.Length; i++)
-            {
-                if (i >= expressions.Length) break;
+            // Find the maximum length to ensure we process all provided positions or expressions
+            int maxItems = Mathf.Max(positions.Length, expressions.Length);
 
-                string spriteName = expressions[i];
+            for (int i = 0; i < maxItems; i++)
+            {
+                // Fallback to the last available position/expression if the arrays have different lengths
+                string currentPosition = i < positions.Length ? positions[i] : positions[positions.Length - 1];
+                string currentExpression = i < expressions.Length ? expressions[i] : expressions[expressions.Length - 1];
+
+                string spriteName = currentExpression.Trim('\uFEFF', '\u200B', '?');
                 string safeSpriteName = (spriteName ?? "").Replace(" ", "").Replace(" ", "").Replace("　", "");
                 
                 if (charDict.TryGetValue(safeSpriteName, out Sprite charSprite))
                 {
-                    string pos = positions[i].ToLower();
+                    string pos = currentPosition.ToLower();
                     SpriteRenderer targetRenderer = null;
                     
                     if ((pos == "left" || pos == "左") && leftRenderer != null)

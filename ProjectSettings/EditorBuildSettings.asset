@@ -23,4 +23,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/gameseta.unity
     guid: e0edb352b39a79449b4fe54c8095e260
+  - enabled: 1
+    path: Assets/Scenes/nnm.unity
+    guid: 9097f4e55439a0b49894a1a9742be6ae
+  - enabled: 1
+    path: Assets/Scenes/gamennm.unity
+    guid: 0e9dcd824d18d44419169aa26ef18952
+  - enabled: 1
+    path: Assets/Scenes/gamehl.unity
+    guid: f387e454c749b0e4a8640f342dc996cf
   m_configObjects: {}

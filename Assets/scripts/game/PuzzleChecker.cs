@@ -103,6 +103,9 @@ public class PuzzleChecker : MonoBehaviour
     // 【新增】保存的历史记录
     private PuzzleHistoryData historyData = new PuzzleHistoryData();
 
+    // 【新增】保存需要下移的工作区的初始坐标
+    private Dictionary<Transform, Vector3> initialShiftPositions = new Dictionary<Transform, Vector3>();
+
     private void Awake()
     {
         if (feedbackSpawnPos1 != null) initialFb1Pos = feedbackSpawnPos1.position;
@@ -111,6 +114,18 @@ public class PuzzleChecker : MonoBehaviour
         if (scrollContent != null)
         {
             initialContentHeight = scrollContent.sizeDelta.y;
+        }
+
+        // 记录所有会被下移的物体的初始位置
+        if (transformsToShiftDown != null)
+        {
+            foreach (var t in transformsToShiftDown)
+            {
+                if (t != null && !initialShiftPositions.ContainsKey(t))
+                {
+                    initialShiftPositions[t] = t.localPosition;
+                }
+            }
         }
 
         // --- 读取存档时的结算历史恢复 ---
@@ -375,9 +390,9 @@ public class PuzzleChecker : MonoBehaviour
         {
             foreach (var t in transformsToShiftDown)
             {
-                if (t != null)
+                if (t != null && initialShiftPositions.ContainsKey(t))
                 {
-                    t.position -= roundOffset * currentAttempt;
+                    t.localPosition = initialShiftPositions[t];
                 }
             }
         }
@@ -540,6 +555,12 @@ public class PuzzleChecker : MonoBehaviour
                                             customScale.y / pScale.y,
                                             customScale.z / pScale.z
                                         );
+                                    }
+
+                                    Canvas canvasComp = cloned.GetComponent<Canvas>();
+                                    if (canvasComp != null)
+                                    {
+                                        canvasComp.overrideSorting = false;
                                     }
                                 }
                             }
