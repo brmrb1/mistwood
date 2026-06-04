@@ -32,4 +32,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/gamehl.unity
     guid: f387e454c749b0e4a8640f342dc996cf
+  - enabled: 1
+    path: Assets/Scenes/gamejin.unity
+    guid: 69ee912235eebc44e97adfdc101c7061
+  - enabled: 1
+    path: Assets/Scenes/gamehl2.unity
+    guid: d350b93acc97e2b48a8e6355cefb70e8
+  - enabled: 1
+    path: Assets/Scenes/gamejin2.unity
+    guid: 17d05f9ad31688a4d88aec986c7676b7
   m_configObjects: {}

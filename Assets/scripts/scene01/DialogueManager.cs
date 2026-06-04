@@ -40,6 +40,7 @@ public class DialogueManager : MonoBehaviour
 
     [Header("音效组件")]
     public AudioSource audioSource; // 用于播放音效的组件
+    public AudioSource bgmSource;   // 用于播放背景音乐的组件
 
     [Header("配置")]
     public TextAsset csvFile;            // CSV 文件
@@ -92,6 +93,11 @@ public class DialogueManager : MonoBehaviour
             if (audioSource == null)
             {
                 audioSource = gameObject.AddComponent<AudioSource>();
+            }
+            if (bgmSource == null)
+            {
+                bgmSource = gameObject.AddComponent<AudioSource>();
+                bgmSource.loop = true; // bgm 默认循环播放
             }
         }
         else
@@ -396,7 +402,10 @@ public class DialogueManager : MonoBehaviour
 
                 if (optionButtonPrefab != null && optionsPanel != null)
                 {
-                    GameObject btnObj = Instantiate(optionButtonPrefab, optionsPanel.transform);
+                    // 使用 worldPositionStays = false 确保 UI 坐标正确，不会变得巨大
+                    GameObject btnObj = Instantiate(optionButtonPrefab);
+                    btnObj.transform.SetParent(optionsPanel.transform, false);
+                    
                     btnObj.SetActive(true);
                     activeOptions.Add(btnObj);
 
@@ -474,6 +483,30 @@ public class DialogueManager : MonoBehaviour
             else
             {
                 Debug.LogWarning("无法从素材库中找到音效映射: " + line.sound);
+            }
+        }
+
+        // --- 播放 BGM ---
+        if (!string.IsNullOrEmpty(line.bgm) && bgmSource != null)
+        {
+            // 如果填特殊指令停止播放
+            if (line.bgm.ToLower() == "stop" || line.bgm.ToLower() == "none")
+            {
+                bgmSource.Stop();
+                bgmSource.clip = null;
+            }
+            else if (audioDict.TryGetValue(line.bgm, out AudioClip bgmClip))
+            {
+                // 如果当前播放的BGM不是这首，或者已经停止了，才进行播放
+                if (bgmSource.clip != bgmClip || !bgmSource.isPlaying)
+                {
+                    bgmSource.clip = bgmClip;
+                    bgmSource.Play();
+                }
+            }
+            else
+            {
+                Debug.LogWarning("无法从素材库中找到BGM映射: " + line.bgm);
             }
         }
 
@@ -821,17 +854,29 @@ public enum DialogueState
 
 // 定义可以显示在 Inspector 的素材映射结构体
 [System.Serializable]
-public struct SpriteMapping
-{
-    public string key;     // CSV 里填的名字
-    public Sprite sprite;  // 对应的图片素材
-}
-
-[System.Serializable]
 public struct AudioMapping
 {
     public string key;     // CSV里填的音效名
     public AudioClip clip; // 对应的音效片段
+
+    public AudioMapping(string key, AudioClip clip)
+    {
+        this.key = key;
+        this.clip = clip;
+    }
+}
+
+[System.Serializable]
+public struct SpriteMapping
+{
+    public string key;     // CSV 里填的名字
+    public Sprite sprite;  // 对应的图片素材
+
+    public SpriteMapping(string key, Sprite sprite)
+    {
+        this.key = key;
+        this.sprite = sprite;
+    }
 }
 
 [System.Serializable]
