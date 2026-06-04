@@ -4748,8 +4748,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 101399789}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.size
+      value: 26
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.size
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.size
@@ -4762,11 +4766,223 @@ PrefabInstance:
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.data[0]
       value: 
-      objectReference: {fileID: 4900000, guid: 0167d65c017a6c641b7807c0edc22538, type: 3}
+      objectReference: {fileID: 4900000, guid: e5227e39ee80c6849a459a9840d757bc, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.data[1]
       value: 
-      objectReference: {fileID: 4900000, guid: 537fe40954d61b649980464725da262d, type: 3}
+      objectReference: {fileID: 4900000, guid: 0912766631499fe4facc56e6c6528a7c, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: overrideCsvList.Array.data[2]
+      value: 
+      objectReference: {fileID: 4900000, guid: 52e3ac50d3aa1ae4b92a3537b29dd871, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[0].key
+      value: "\u60D1\u3072_MADOHI_BPM_intro (1)"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[1].key
+      value: "\u8BE1\u5F02woo_scary"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[2].key
+      value: "HE\u7ED3\u5C40\u6216\u8005\u65E5\u5E38Explore"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[3].key
+      value: Logic_full
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[4].key
+      value: Dystopian
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[5].key
+      value: Empty Streets
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[6].key
+      value: "\u8FF7\u5BAE_MEIKYU_intro (1)"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[7].key
+      value: 5_Dramatic_2_Master
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[8].key
+      value: 'MADOHI_BPM_intro '
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[9].key
+      value: Mansion in Forest_intro
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[0].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 39033e5c05d82f04498cc31b18410c24, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[10].key
+      value: "111\u8FF7\u5BAE_MEIKYU_intro (1)"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[11].key
+      value: A Calm Moment
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[12].key
+      value: Mystery Unsolved
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[13].key
+      value: Mystery_Cellar_full
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[14].key
+      value: Contemplation Version 1(1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[15].key
+      value: Dark Atmosphere to Synth
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[16].key
+      value: Logic_intro
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[17].key
+      value: Logic_intro 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[18].key
+      value: Mystery_Cellar_intro
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[19].key
+      value: The_Trouble_Always_Comes_From_You_full
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[1].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 996336a13740e8246ad5a16871665969, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[20].key
+      value: Explore
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[21].key
+      value: frozen_winter
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[22].key
+      value: A Lullaby
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[23].key
+      value: Adventure
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[24].key
+      value: "\u5C01\u97625_Dramatic_2_Master"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[25].key
+      value: "\u5F85\u5B9AMessage_From_Holmes_full"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[2].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: ab6345bfa0703834a86731c3229e2fa0, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[3].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 18e15a1be83a52345991f9d0f871ab55, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[4].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 33d301c3bfa82894e9cf028eed31ad26, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[5].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 536da4f348a4b8247941fae4a73e90a2, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[6].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 02fbcfc9e18aa28459432a8e25703181, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[7].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 9cd546fbede17e44899b7bb8fe50381e, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[8].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 58d9f317663dab94c930549ba6c0fcfc, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[9].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 6a7b53d741d9f72408fefa7d13beb59e, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[10].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 9cca9247938c47d40b9cce9dffa018c0, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[11].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 79e3b7605d4ded14f9c0aec2d0522eac, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[12].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 9d7e77e418f22154483bbfab980b1630, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[13].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: f0c492865e86def49b70cb4201f5fd11, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[14].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 82a4f45edf6eedf4eb7ecc9af91376e9, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[15].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 12963716c293e5942a7f7a5613005a36, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[16].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 279ead2163307984f82f756bd26ce6c6, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[17].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 074660df46e792e4993b36120f509f87, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[18].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 6467e275b770bed4f8cad787f554f10f, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[19].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 2325f0b7b428f9b46b2046b7382a117c, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[20].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: cf38bd8cb94803447be49834fd5f5730, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[21].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 370b812309f2ac046bb1bb631260cc68, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[22].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: bf103b7e693458c4cbf877b70388ba42, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[23].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 9623e3f588b6b694fa9ea20d275ffb7e, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[24].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 421be2909e0dbda419a718813e3c7d44, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: audioLibrary.Array.data[25].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 4ef5457b65ac4eb43a95a4856e19deb6, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.data[0].key
       value: "\u8212\u60A6\u6749\uFF08\u51DD\u91CD\uFF09"
@@ -9409,7 +9625,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 2041151572, guid: 8f8f32ce30c380b47b3eb4c214307c2c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -9705,7 +9921,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 51f51672f02c9af41889d72acda1d0b5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2e5d9cad8ff740b4982329cdf17c7880, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

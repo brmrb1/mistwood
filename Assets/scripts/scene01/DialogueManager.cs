@@ -63,18 +63,15 @@ public class DialogueManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            // 如果你希望对话管理器跨场景存在，可以取消注释下面这行
-            // DontDestroyOnLoad(gameObject);
+        // 简化单例逻辑：进入新场景时直接覆盖实例，因为旧场景的实例会被 Unity 自动销毁
+        Instance = this;
 
-            // 初始化映射字典
-            foreach (var item in backgroundLibrary)
-            {
-                string safeKey = (item.key ?? "").Trim().ToLower();
-                if (!bgDict.ContainsKey(safeKey)) bgDict.Add(safeKey, item.sprite);
-            }
+        // 初始化映射字典
+        foreach (var item in backgroundLibrary)
+        {
+            string safeKey = (item.key ?? "").Trim().ToLower();
+            if (!bgDict.ContainsKey(safeKey)) bgDict.Add(safeKey, item.sprite);
+        }
             foreach (var item in characterLibrary)
             {
                 string safeKey = (item.key ?? "").Replace(" ", "").Replace(" ", "").Replace("　", "").Trim();
@@ -99,11 +96,6 @@ public class DialogueManager : MonoBehaviour
                 bgmSource = gameObject.AddComponent<AudioSource>();
                 bgmSource.loop = true; // bgm 默认循环播放
             }
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
     }
 
     private void Start()
@@ -115,14 +107,21 @@ public class DialogueManager : MonoBehaviour
         string resumeCSV = PlayerPrefs.GetString("ResumeCSVName", "");
         if (!string.IsNullOrEmpty(resumeCSV))
         {
+            Debug.Log($"【DialogueManager】检测到跳转剧本请求: {resumeCSV}");
             // 如果有指定且列表里存在同名 CSV，就覆盖当前 csvFile
             TextAsset targetCsv = overrideCsvList.Find(x => x.name == resumeCSV);
             if (targetCsv != null)
             {
                 csvFile = targetCsv;
+                Debug.Log($"【DialogueManager】成功在 overrideCsvList 中找到并应用剧本: {resumeCSV}");
+            }
+            else
+            {
+                Debug.LogError($"【DialogueManager】无法应用剧本 {resumeCSV}：在当前场景 DialogueManager 的 overrideCsvList 中找不到同名映射，请在 Inspector 面板检查配置！");
             }
             // 消费掉，防止影响以后正常的开始
             PlayerPrefs.DeleteKey("ResumeCSVName");
+            PlayerPrefs.Save();
         }
 
         if (csvFile != null)
@@ -741,6 +740,7 @@ public class DialogueManager : MonoBehaviour
                 
                 // 跳转新剧本后通常默认从 0 行开始
                 PlayerPrefs.SetString("ResumeDialogueID", "0"); 
+                PlayerPrefs.Save(); // 强制保存，确保跳转场景后能读取到
             }
 
             SceneManager.LoadScene(sceneName);
