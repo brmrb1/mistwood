@@ -10,6 +10,52 @@ public class CanMoveEvent : MonoBehaviour
     [Tooltip("下移的距离 (单位)，根据需要可以设为 8")]
     public float moveDistance = 8f;
 
+    private bool hasMoved = false;
+    public bool HasMoved => hasMoved;
+
+    private void Start()
+    {
+        // 尝试自动填充引用
+        if (canMoveObject == null)
+        {
+            GameObject obj = GameObject.Find("canmove");
+            if (obj != null) canMoveObject = obj.transform;
+        }
+
+        // 读取存档
+        if (PlayerPrefs.HasKey("TargetLoadSlot"))
+        {
+            int slot = PlayerPrefs.GetInt("TargetLoadSlot");
+
+            // 【核心逻辑优化】读档前先检查“存档是否有效”。如果没有该档位的时间记录，说明是空档或已删除，拒绝加载数据。
+            if (!PlayerPrefs.HasKey("SaveTime_" + slot))
+            {
+                return;
+            }
+
+            // 【修复】存档键值应包含场景名称，以区分不同关卡的独立 canmove 状态
+            string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            string key = "CanMove_" + slot + "_" + sceneName + "_" + gameObject.name;
+            if (PlayerPrefs.GetInt(key, 0) == 1)
+            {
+                ApplyMove();
+            }
+        }
+    }
+
+    private void ApplyMove()
+    {
+        if (canMoveObject == null) return;
+        if (hasMoved) return;
+
+        Vector3 pos = canMoveObject.localPosition;
+        pos.y -= moveDistance;
+        canMoveObject.localPosition = pos;
+        hasMoved = true;
+        
+        Debug.Log($"【CanMoveEvent】已恢复 {canMoveObject.name} 位移状态，当前 localPosition: {pos}");
+    }
+
     // 当满足 csv6 触发条件时或由 DialogueManager 调用
     public void StartInteraction()
     {
@@ -28,14 +74,14 @@ public class CanMoveEvent : MonoBehaviour
             }
         }
 
-        // 获取原来的位置
-        Vector3 pos = canMoveObject.localPosition;
-        // 将Y轴下移
-        pos.y -= moveDistance;
-        // 更新位置
-        canMoveObject.localPosition = pos;
-        
-        Debug.Log($"【CanMoveEvent】已将 {canMoveObject.name} 下移 {moveDistance} 单位，当前 localPosition: {pos}");
+        if (!hasMoved)
+        {
+            ApplyMove();
+        }
+        else
+        {
+            Debug.Log("【CanMoveEvent】物体已经处于位移后的位置，跳过。");
+        }
         
         // 执行完事件继续主对话
         if (DialogueManager.Instance != null)

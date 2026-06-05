@@ -61,13 +61,32 @@ public class SettingsManager : MonoBehaviour
     public void ResetSettings()
     {
         // 将声音UI恢复到最大值 1 
-        if (bgmSlider != null) bgmSlider.value = 1f;
-        if (characterSFXSlider != null) characterSFXSlider.value = 1f;
-        if (sfxSlider != null) sfxSlider.value = 1f;
+        if (bgmSlider != null)
+        {
+            bgmSlider.value = 1f;
+            SetBGMVolume(1f);
+        }
+        if (characterSFXSlider != null)
+        {
+            characterSFXSlider.value = 1f;
+            SetCharacterSFXVolume(1f);
+        }
+        if (sfxSlider != null)
+        {
+            sfxSlider.value = 1f;
+            SetSFXVolume(1f);
+        }
 
         // 恢复全屏默认状态
-        if (screenModeDropdown != null) screenModeDropdown.value = 0;
-        Screen.fullScreen = true;
+        if (screenModeDropdown != null)
+        {
+            screenModeDropdown.value = 0;
+            SetScreenMode(0);
+        }
+        else
+        {
+            Screen.fullScreen = true;
+        }
 
         // 恢复默认语言 (通常 0 代表默认语言，比如中文)
         if (languageDropdown != null) languageDropdown.value = 0;

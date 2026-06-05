@@ -130,9 +130,17 @@ public class SaveManager : MonoBehaviour
         // 2. 读取之前保存的场景名称，如果没有则默认读取第一关
         string savedScene = PlayerPrefs.GetString("SavedScene_" + currentSelectedSlot, "start"); 
         
-        // 3. 读取对话进度存入过渡键值，供目标场景的 talk 脚本读取
-        int savedDialogIndex = PlayerPrefs.GetInt("SavedDialogIndex_" + currentSelectedSlot, 0);
-        PlayerPrefs.SetInt("TargetLoadDialogIndex", savedDialogIndex);
+        // 3. 读取对话进度存入过渡键值，供目标场景的 DialogueManager 脚本读取
+        // 使用 String 类型存储 ID 以兼容非数字 ID
+        string savedDialogID = PlayerPrefs.GetString("SavedDialogID_" + currentSelectedSlot, "0");
+        PlayerPrefs.SetString("TargetLoadDialogID", savedDialogID);
+
+        // 如果存了自定义剧本名，也传下去
+        string savedCSV = PlayerPrefs.GetString("SavedCSVName_" + currentSelectedSlot, "");
+        if (!string.IsNullOrEmpty(savedCSV))
+        {
+            PlayerPrefs.SetString("ResumeCSVName", savedCSV);
+        }
 
         // 【新增】告诉下个场景系统：我们目前读取的是哪个槽位的数据
         PlayerPrefs.SetInt("TargetLoadSlot", currentSelectedSlot);
@@ -172,7 +180,15 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.DeleteKey("PlayTimeString_" + currentSelectedSlot);
         PlayerPrefs.DeleteKey("PlayTimeFloat_" + currentSelectedSlot);
         PlayerPrefs.DeleteKey("SavedScene_" + currentSelectedSlot);
-        PlayerPrefs.DeleteKey("SavedDialogIndex_" + currentSelectedSlot);
+        PlayerPrefs.DeleteKey("SavedDialogID_" + currentSelectedSlot);
+        PlayerPrefs.DeleteKey("SavedCSVName_" + currentSelectedSlot);
+
+        // 【新增修复】清除当前可能存在的加载标记，防止误读
+        if (PlayerPrefs.GetInt("TargetLoadSlot", -1) == currentSelectedSlot)
+        {
+            PlayerPrefs.DeleteKey("TargetLoadSlot");
+        }
+
         PlayerPrefs.Save();
 
         // 隐藏面板
@@ -234,15 +250,23 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.SetString("SavedScene_" + slotIndex, currentSceneName);
 
         // 如果场景中有对话系统，保存当前对话进度
-        // talk talkSystem = FindObjectOfType<talk>();
-        // if (talkSystem != null)
-        // {
-        //     PlayerPrefs.SetInt("SavedDialogIndex_" + slotIndex, talkSystem.dialogIndex);
-        // }
-        // else
-        // {
-            PlayerPrefs.SetInt("SavedDialogIndex_" + slotIndex, 0);
-        // }
+        if (DialogueManager.Instance != null)
+        {
+            // 通过接口获取当前正在进行的 ID 和 CSV 文件名
+            string currentID = DialogueManager.Instance.GetCurrentLineID();
+            string currentCSV = DialogueManager.Instance.GetCurrentCSVName();
+
+            // 如果当前是在挂起（小游戏中），DialogueManager.Instance.GetCurrentLineID() 拿到的
+            // 就是触发该小游戏的 EVENT 所在的行 ID。读档时，会重新触发 TriggerGameEvent。
+            PlayerPrefs.SetString("SavedDialogID_" + slotIndex, currentID);
+            PlayerPrefs.SetString("SavedCSVName_" + slotIndex, currentCSV);
+            
+            Debug.Log($"【存档系统】已记录对话进度: ID={currentID}, CSV={currentCSV}");
+        }
+        else
+        {
+            PlayerPrefs.SetString("SavedDialogID_" + slotIndex, "0");
+        }
 
         // 【新增】保存场景中所有能够拖拽生存预制体的物品进度状态
         dragright[] allDrags = FindObjectsOfType<dragright>();
@@ -250,6 +274,14 @@ public class SaveManager : MonoBehaviour
         {
             // 通过物体的名字作为唯一标识符存储它们各自“成功生成的次数”
             PlayerPrefs.SetInt("DragProgress_" + slotIndex + "_" + d.gameObject.name, d.CurrentSuccessCount);
+        }
+
+        // 【新增】保存 CanMoveEvent 的位移状态
+        CanMoveEvent[] allCanMoves = FindObjectsOfType<CanMoveEvent>();
+        foreach (var cm in allCanMoves)
+        {
+            // 【修复】保存键时加入当前场景名，解决多关卡独立状态的问题
+            PlayerPrefs.SetInt("CanMove_" + slotIndex + "_" + currentSceneName + "_" + cm.gameObject.name, cm.HasMoved ? 1 : 0);
         }
 
         // 【新增】如果是解谜场景，通知检验系统去把过去的各种历史结算快照序列化到 PlayerPrefs

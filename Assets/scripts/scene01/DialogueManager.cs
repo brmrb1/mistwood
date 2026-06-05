@@ -41,6 +41,8 @@ public class DialogueManager : MonoBehaviour
     [Header("音效组件")]
     public AudioSource audioSource; // 用于播放音效的组件
     public AudioSource bgmSource;   // 用于播放背景音乐的组件
+    public UnityEngine.Audio.AudioMixerGroup bgmGroup; // 新增：BGM 混音组
+    public UnityEngine.Audio.AudioMixerGroup sfxGroup; // 新增：音效混音组
 
     [Header("配置")]
     public TextAsset csvFile;            // CSV 文件
@@ -60,6 +62,11 @@ public class DialogueManager : MonoBehaviour
     private DialogueLine currentLine;
     private Coroutine typingCoroutine;
     private bool skipTyping = false;     // 点击跳过打字效果
+
+    // --- 【新增】供存档系统调用的接口 ---
+    public string GetCurrentLineID() => currentLine != null ? currentLine.id : "0";
+    public string GetCurrentCSVName() => csvFile != null ? csvFile.name : "";
+    public DialogueState GetCurrentState() => currentState;
 
     private void Awake()
     {
@@ -86,16 +93,19 @@ public class DialogueManager : MonoBehaviour
                 if (!effectDict.ContainsKey(item.key)) effectDict.Add(item.key, item.prefab);
             }
 
-            // 自动添加AudioSource
+            // 自动添加AudioSource并配置混音组
             if (audioSource == null)
             {
                 audioSource = gameObject.AddComponent<AudioSource>();
             }
+            if (sfxGroup != null) audioSource.outputAudioMixerGroup = sfxGroup;
+
             if (bgmSource == null)
             {
                 bgmSource = gameObject.AddComponent<AudioSource>();
                 bgmSource.loop = true; // bgm 默认循环播放
             }
+            if (bgmGroup != null) bgmSource.outputAudioMixerGroup = bgmGroup;
     }
 
     private void Start()
@@ -129,10 +139,23 @@ public class DialogueManager : MonoBehaviour
             LoadCSV(csvFile.text);
         }
 
-        // 检查之前是否因为小游戏挂起保存了待恢复的 ID
-        string resumeID = PlayerPrefs.GetString("ResumeDialogueID", "");
-        if (!string.IsNullOrEmpty(resumeID))
+        // 【新增】优先检查是否有存档读取进度的指示
+        string savedLoadID = PlayerPrefs.GetString("TargetLoadDialogID", "");
+        if (!string.IsNullOrEmpty(savedLoadID))
         {
+            Debug.Log($"【DialogueManager】执行存档读取，起始 ID: {savedLoadID}");
+            PlayerPrefs.DeleteKey("TargetLoadDialogID");
+            
+            // 如果读取了存档进度，则清空临时的 ResumeDialogueID 防止冲突
+            PlayerPrefs.DeleteKey("ResumeDialogueID");
+            PlayerPrefs.Save();
+
+            StartDialogue(savedLoadID);
+        }
+        // 检查之前是否因为小游戏挂起保存了待恢复的 ID
+        else if (PlayerPrefs.HasKey("ResumeDialogueID"))
+        {
+            string resumeID = PlayerPrefs.GetString("ResumeDialogueID", "");
             PlayerPrefs.DeleteKey("ResumeDialogueID"); // 消费掉
             StartDialogue(resumeID);
         }
@@ -145,11 +168,16 @@ public class DialogueManager : MonoBehaviour
 
     private void Update()
     {
-        // 监听鼠标左键点击，或者手机触屏
-        if (Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
+        // 监听鼠标左键点击、手机触屏，或者按空格键
+        bool userWantsNext = Input.GetMouseButtonDown(0) || 
+                            (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) ||
+                            Input.GetKeyDown(KeyCode.Space);
+
+        if (userWantsNext)
         {
             // 检查点击位置是否在 UI 按钮上，如果在 UI 按钮上，就交给按钮自身处理
-            if (EventSystem.current != null)
+            // (空格键通常不需要检查 UI 遮挡)
+            if (EventSystem.current != null && !Input.GetKeyDown(KeyCode.Space))
             {
                 bool isPointerOverUI = false;
 

@@ -25,7 +25,8 @@ public class Jiu1InteractEvent : MonoBehaviour
                 }
 
                 // 也确保物体本身是 active 的，如果是被隐藏的这里可以顺带激活它
-                if (!drag.gameObject.activeSelf)
+                // 【改进】如果该物体已经在存档里记录为已完成（>=3次），则不要在这个事件启动时强行把它重新激活显示出来
+                if (!drag.gameObject.activeSelf && drag.CurrentSuccessCount < 3)
                 {
                     drag.gameObject.SetActive(true);
                 }

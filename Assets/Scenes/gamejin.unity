@@ -4473,6 +4473,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0.06
       objectReference: {fileID: 0}
+    - target: {fileID: 8527143310455050776, guid: 66136308616f21746b585987241b5f62, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8992201732744367972, guid: 66136308616f21746b585987241b5f62, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -4765,7 +4769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.size
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.size
@@ -4778,11 +4782,15 @@ PrefabInstance:
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.data[0]
       value: 
-      objectReference: {fileID: 4900000, guid: 0167d65c017a6c641b7807c0edc22538, type: 3}
+      objectReference: {fileID: 4900000, guid: 52e3ac50d3aa1ae4b92a3537b29dd871, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.data[1]
       value: 
-      objectReference: {fileID: 4900000, guid: 537fe40954d61b649980464725da262d, type: 3}
+      objectReference: {fileID: 4900000, guid: 77f9029609b942c4ea9a82629b9e91fe, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: overrideCsvList.Array.data[2]
+      value: 
+      objectReference: {fileID: 4900000, guid: 43b005d89e7ad4b45adbb4788ff1f938, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: audioLibrary.Array.data[0].key
       value: Dark Atmosphere to Synth

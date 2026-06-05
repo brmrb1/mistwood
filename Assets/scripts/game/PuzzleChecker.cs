@@ -132,7 +132,12 @@ public class PuzzleChecker : MonoBehaviour
         if (PlayerPrefs.HasKey("TargetLoadSlot"))
         {
             int slot = PlayerPrefs.GetInt("TargetLoadSlot");
-            RestoreHistory(slot);
+
+            // 【核心逻辑优化】读档前先检查“存档是否有效”。如果没有该档位的时间记录，说明是空档或已删除，拒绝加载数据。
+            if (PlayerPrefs.HasKey("SaveTime_" + slot))
+            {
+                RestoreHistory(slot);
+            }
         }
     }
 
