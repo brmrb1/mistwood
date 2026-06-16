@@ -768,7 +768,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 833843508}
   m_Direction: 2
   m_Value: 1.0000006
-  m_Size: 0.8420972
+  m_Size: 0.84209716
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1728,7 +1728,7 @@ Transform:
   m_GameObject: {fileID: 345064132}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 871.5399, y: -36.02, z: 0}
+  m_LocalPosition: {x: 818, y: -36.02, z: 0}
   m_LocalScale: {x: 123.42504, y: 109.09139, z: 96.163895}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1776,7 +1776,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 6af0e76fd6e44a94a95d981a15b36b66, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0ea4386a9789fef448f0d7546ba68ca7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4753,7 +4753,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.size
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.size
@@ -4766,11 +4766,15 @@ PrefabInstance:
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.data[0]
       value: 
-      objectReference: {fileID: 4900000, guid: 0167d65c017a6c641b7807c0edc22538, type: 3}
+      objectReference: {fileID: 4900000, guid: 0912766631499fe4facc56e6c6528a7c, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.data[1]
       value: 
-      objectReference: {fileID: 4900000, guid: 537fe40954d61b649980464725da262d, type: 3}
+      objectReference: {fileID: 4900000, guid: 52e3ac50d3aa1ae4b92a3537b29dd871, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: overrideCsvList.Array.data[2]
+      value: 
+      objectReference: {fileID: 4900000, guid: 77f9029609b942c4ea9a82629b9e91fe, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: audioLibrary.Array.data[0].key
       value: Dark Atmosphere to Synth
@@ -8092,7 +8096,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 788.8, y: 461.66}
+  m_AnchoredPosition: {x: 792, y: 537}
   m_SizeDelta: {x: 785.59, y: 42.68}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1505472867
@@ -10751,6 +10755,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4569464628979283377, guid: 255e86bfd7016e449aab33e08fb61478, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 8925356265748382085, guid: 255e86bfd7016e449aab33e08fb61478, type: 3}
       propertyPath: m_Name
       value: back
@@ -10803,7 +10811,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.7741089, y: -0.6142807}
+  m_AnchoredPosition: {x: -0.34020996, y: -0.6143036}
   m_SizeDelta: {x: 862.47, y: 1042.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1946596612
