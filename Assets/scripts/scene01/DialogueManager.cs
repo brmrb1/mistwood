@@ -672,23 +672,30 @@ public class DialogueManager : MonoBehaviour
     {
         currentState = DialogueState.Playing;
         skipTyping = false;
-        
-        if (contentText != null) contentText.text = "";
-        
-        // 简单打字效果，支持富文本需额外处理
-        foreach (char c in textContent.ToCharArray())
-        {
-            if (skipTyping)
-            {
-                // 如果跳过，直接显示全部
-                if (contentText != null) contentText.text = textContent;
-                break;
-            }
 
-            if (contentText != null) contentText.text += c;
+        if (contentText != null)
+        {
+            // 使用 maxVisibleCharacters 实现打字机效果，可完美支持富文本（标签不会被逐字显示）
+            contentText.text = textContent;
+            contentText.maxVisibleCharacters = 0;
             
-            // 真实等待时间 = 基础出字速度 / 速度倍率
-            yield return new WaitForSeconds(typeSpeed / currentSpeedMultiplier);
+            // 强制更新以计算真实的字符数量（不计入富文本标签）
+            contentText.ForceMeshUpdate();
+            int totalVisibleCharacters = contentText.textInfo.characterCount;
+
+            for (int i = 0; i <= totalVisibleCharacters; i++)
+            {
+                if (skipTyping)
+                {
+                    contentText.maxVisibleCharacters = totalVisibleCharacters;
+                    break;
+                }
+
+                contentText.maxVisibleCharacters = i;
+
+                // 真实等待时间 = 基础出字速度 / 速度倍率
+                yield return new WaitForSeconds(typeSpeed / currentSpeedMultiplier);
+            }
         }
 
         currentState = DialogueState.Waiting;
