@@ -4773,11 +4773,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.size
-      value: 56
+      value: 57
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: backgroundLibrary.Array.size
-      value: 14
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: overrideCsvList.Array.data[0]
@@ -5300,6 +5300,10 @@ PrefabInstance:
       value: "\u8389\u8389\u767D\uFF08\u751F\u6C14\uFF09"
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[56].key
+      value: "\u54C8\u4F26\uFF08\u6127\u759A\uFF09"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: backgroundLibrary.Array.data[10].key
       value: "\u7801\u5934"
       objectReference: {fileID: 0}
@@ -5314,6 +5318,10 @@ PrefabInstance:
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: backgroundLibrary.Array.data[13].key
       value: jgby
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[14].key
+      value: "\u4E00\u7ED3\u5C40CG"
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.data[0].sprite
@@ -5572,6 +5580,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 59db40633a4dd1041b206e07a0874bc3, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: characterLibrary.Array.data[56].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1e64951c3d3e89f46bf3a4fa254b0d5a, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: backgroundLibrary.Array.data[10].sprite
       value: 
       objectReference: {fileID: 21300000, guid: 0332a44bed6f4d149a6bfa9b7f8af17b, type: 3}
@@ -5587,6 +5599,10 @@ PrefabInstance:
       propertyPath: backgroundLibrary.Array.data[13].sprite
       value: 
       objectReference: {fileID: 21300000, guid: efe3bafa1002c8c40b65feee38240259, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[14].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d451f6491c82aa7479f57cf18c3f749e, type: 3}
     - target: {fileID: 4629120604082829488, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: m_SortingLayer
       value: 1

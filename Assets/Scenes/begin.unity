@@ -2953,6 +2953,10 @@ PrefabInstance:
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: audioLibrary.Array.data[0].key
       value: "\u60D1\u3072_MADOHI_BPM_intro (1)"
       objectReference: {fileID: 0}
@@ -3225,6 +3229,10 @@ PrefabInstance:
       value: desk
       objectReference: {fileID: 0}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[9].key
+      value: "\u6D77\u4E0A\u5217\u8F66\u8212"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.data[10].key
       value: "\u96EA\u514B\uFF08\u4F4E\u843D\uFF09 "
       objectReference: {fileID: 0}
@@ -3328,6 +3336,10 @@ PrefabInstance:
       propertyPath: backgroundLibrary.Array.data[8].sprite
       value: 
       objectReference: {fileID: 21300000, guid: c9c7cff845a6bb844a487a92ebfeca3f, type: 3}
+    - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
+      propertyPath: backgroundLibrary.Array.data[9].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ab0470a51be9d1047b5b2aad10a1245a, type: 3}
     - target: {fileID: 4272870830442209448, guid: 1ca10ed10df043048878e9457acdfe8c, type: 3}
       propertyPath: characterLibrary.Array.data[10].sprite
       value: 

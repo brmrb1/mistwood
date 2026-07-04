@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,11 +7,8 @@ public class ImagePageController : MonoBehaviour
     [Header("Page")]
     public GameObject pageRoot;
 
-    [Header("Image Display")]
-    public Image targetImage;
-
-    [Header("Image List")]
-    public List<Sprite> images = new List<Sprite>();
+    [Header("Page Items")]
+    public List<GameObject> pages = new List<GameObject>();
 
     [Header("Navigation Buttons")]
     public Button previousButton;
@@ -34,17 +30,19 @@ public class ImagePageController : MonoBehaviour
         }
 
         currentIndex = 0;
-        ApplyCurrentImage();
+        ApplyCurrentContent();
     }
 
     public void OpenPage()
     {
+        BindUI();
+
         if (pageRoot != null)
         {
             pageRoot.SetActive(true);
         }
 
-        ApplyCurrentImage();
+        ApplyCurrentContent();
     }
 
     public void ClosePage()
@@ -57,6 +55,8 @@ public class ImagePageController : MonoBehaviour
 
     public void TogglePage()
     {
+        BindUI();
+
         if (pageRoot == null)
         {
             return;
@@ -66,13 +66,13 @@ public class ImagePageController : MonoBehaviour
 
         if (pageRoot.activeSelf)
         {
-            ApplyCurrentImage();
+            ApplyCurrentContent();
         }
     }
 
     public void PreviousImage()
     {
-        if (images.Count == 0)
+        if (pages.Count == 0)
         {
             return;
         }
@@ -80,26 +80,26 @@ public class ImagePageController : MonoBehaviour
         currentIndex--;
         if (currentIndex < 0)
         {
-            currentIndex = images.Count - 1;
+            currentIndex = pages.Count - 1;
         }
 
-        ApplyCurrentImage();
+        ApplyCurrentContent();
     }
 
     public void NextImage()
     {
-        if (images.Count == 0)
+        if (pages.Count == 0)
         {
             return;
         }
 
         currentIndex++;
-        if (currentIndex >= images.Count)
+        if (currentIndex >= pages.Count)
         {
             currentIndex = 0;
         }
 
-        ApplyCurrentImage();
+        ApplyCurrentContent();
     }
 
     private void BindUI()
@@ -127,16 +127,10 @@ public class ImagePageController : MonoBehaviour
         }
     }
 
-    private void ApplyCurrentImage()
+    private void ApplyCurrentContent()
     {
-        if (targetImage == null)
+        if (pages.Count == 0)
         {
-            return;
-        }
-
-        if (images.Count == 0)
-        {
-            targetImage.sprite = null;
             return;
         }
 
@@ -145,15 +139,41 @@ public class ImagePageController : MonoBehaviour
             currentIndex = 0;
         }
 
-        if (currentIndex >= images.Count)
+        if (currentIndex >= pages.Count)
         {
-            currentIndex = images.Count - 1;
+            currentIndex = pages.Count - 1;
         }
 
-        Sprite sprite = images[currentIndex];
-        if (sprite != null)
+        for (int i = 0; i < pages.Count; i++)
         {
-            targetImage.sprite = sprite;
+            GameObject page = pages[i];
+            if (page != null)
+            {
+                page.SetActive(i == currentIndex);
+            }
+        }
+
+        Debug.Log($"[ImagePageController] Applied page index={currentIndex}, totalPages={pages.Count}");
+    }
+
+    private void OnValidate()
+    {
+        if (pages == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < pages.Count; i++)
+        {
+            if (pages[i] == null)
+            {
+                continue;
+            }
+
+            if (pages[i].transform.parent != null && pageRoot != null && pages[i].transform.parent != pageRoot.transform)
+            {
+                Debug.LogWarning($"[ImagePageController] 页面 {pages[i].name} 不在 Page Root 下面，切页时可能看起来像没切换。", this);
+            }
         }
     }
 }
