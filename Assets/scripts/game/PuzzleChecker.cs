@@ -94,6 +94,9 @@ public class PuzzleChecker : MonoBehaviour
     [Tooltip("【新增】如果有填入正确答案的坑位没放东西，点击结算弹出的提示面板")]
     public GameObject emptyPromptPanel;
 
+    [Header("音效")]
+    public AudioClip successSfx;
+
     private Vector3 initialFb1Pos;
     private Vector3 initialFb2Pos;
     private GameObject currentFb1;
@@ -246,6 +249,7 @@ public class PuzzleChecker : MonoBehaviour
         if (isAllCorrect)
         {
             Debug.Log("拼图全部正确！弹出成功CG！");
+            PlaySuccessSfx();
             // 生成最后的正确反馈图标
             int maxIdx1 = Mathf.Clamp(correctTypeCount, 0, feedbackPrefabs1 != null ? feedbackPrefabs1.Length - 1 : 0);
             int maxIdx2 = Mathf.Clamp(correctFormCount, 0, feedbackPrefabs2 != null ? feedbackPrefabs2.Length - 1 : 0);
@@ -614,6 +618,17 @@ public class PuzzleChecker : MonoBehaviour
         currentAttempt = savedAttempt;
 
         // 【如果答对了最后一次或者失败了】需要重新弹出相关判定（简单处理即可）。
+    }
+
+    private void PlaySuccessSfx()
+    {
+        if (successSfx == null)
+        {
+            return;
+        }
+
+        Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(successSfx, playPosition);
     }
 }
 

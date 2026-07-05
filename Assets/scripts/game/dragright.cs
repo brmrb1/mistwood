@@ -17,6 +17,9 @@ public class dragright : MonoBehaviour
     [SerializeField] private Animator successAnimator;   // 拖动到目标位置成功时播放动画的Animator组件
     [SerializeField] private string successTriggerName = "Play"; // 动画触发器的名称
     [SerializeField] private float animationDuration = 1.0f; // 【新增】动画时长，等待该时间后再消失/生成新图
+
+    [Header("音效")]
+    [SerializeField] private AudioClip successSfx; // 拖到指定位置时播放一次的音效
     
     [Header("悬浮提示")]
     [SerializeField] private GameObject hoverTooltipObj; // 鼠标悬浮时显示的提示图（建议把该提示图作为子物体，默认设为不激活/隐藏，然后拖入此格子）
@@ -296,6 +299,8 @@ public class dragright : MonoBehaviour
     // 分离出来的原本处理替换贴图和消失逻辑的方法
     private void FinishSuccessLogic()
     {
+        PlaySuccessSfx();
+
         // 【新增逻辑】只对“同一个目标生成点”起效的独立互斥判断
         if (spawnPoint != null)
             {
@@ -401,6 +406,17 @@ public class dragright : MonoBehaviour
                     spriteRenderer.color = c;
                 }
             }
+    }
+
+    private void PlaySuccessSfx()
+    {
+        if (successSfx == null)
+        {
+            return;
+        }
+
+        Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(successSfx, playPosition);
     }
 
     // 【新增方法】重置该图片的进度和颜色

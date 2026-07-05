@@ -8,6 +8,9 @@ public class UpInteractEvent : MonoBehaviour
     [Header("交互配置")]
     [Tooltip("弹出的提示图片/文字对象 (需要提前放在 Canvas 下并隐藏)")]
     public GameObject promptUI;
+
+    [Tooltip("交互时播放的音效")]
+    public AudioClip interactSfx;
     
     [Tooltip("放大倍数")]
     public float scaleMultiplier = 1.5f;
@@ -55,6 +58,7 @@ public class UpInteractEvent : MonoBehaviour
     // 由 DialogueManager 唤醒
     public void StartInteraction()
     {
+        PlayInteractSfx();
         // 1. 确保自身激活
         gameObject.SetActive(true);
         isScaled = true;
@@ -109,6 +113,8 @@ public class UpInteractEvent : MonoBehaviour
     public void FinishInteraction()
     {
         if (!isScaled) return;
+
+        PlayInteractSfx();
         
         isScaled = false;
 
@@ -158,6 +164,13 @@ public class UpInteractEvent : MonoBehaviour
         }
 
         Debug.Log($"【{gameObject.name}】结束放大事项，恢复原状并继续剧情。");
+    }
+
+    private void PlayInteractSfx()
+    {
+        if (interactSfx == null) return;
+        Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(interactSfx, playPosition);
     }
 
     // 延迟一帧恢复对话，这是为了消化掉当前那一帧玩家点鼠标的输入动作

@@ -4,9 +4,13 @@ using UnityEngine;
 // 当 CSV 对话表里填了 "jiu1" 事件时，DialogueManager 会唤醒并调用这个 StartInteraction。
 public class Jiu1InteractEvent : MonoBehaviour
 {
+    [Header("音效")]
+    public AudioClip interactSfx;
+
     // 对话管理器会调用此方法
     public void StartInteraction()
     {
+        PlayInteractSfx();
         // 寻找到项目中所有的 dragright 脚本对象
         dragright[] allDrags = Resources.FindObjectsOfTypeAll<dragright>();
         
@@ -36,5 +40,12 @@ public class Jiu1InteractEvent : MonoBehaviour
         }
         
         Debug.Log($"【jiu1事件】已成功激活场景中的 {count} 个 dragright 及其 BoxCollider2D。");
+    }
+
+    private void PlayInteractSfx()
+    {
+        if (interactSfx == null) return;
+        Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(interactSfx, playPosition);
     }
 }

@@ -40,9 +40,12 @@ public class DialogueManager : MonoBehaviour
 
     [Header("音效组件")]
     public AudioSource audioSource; // 用于播放音效的组件
+    public AudioSource typingAudioSource; // 用于播放文字显示音效的独立组件
     public AudioSource bgmSource;   // 用于播放背景音乐的组件
     public UnityEngine.Audio.AudioMixerGroup bgmGroup; // 新增：BGM 混音组
     public UnityEngine.Audio.AudioMixerGroup sfxGroup; // 新增：音效混音组
+    public AudioClip continueButtonSfx; // 点击继续按钮时播放的音效
+    public AudioClip typingSfx; // 显示文字时播放的音效
 
     [Header("配置")]
     public TextAsset csvFile;            // CSV 文件
@@ -99,6 +102,13 @@ public class DialogueManager : MonoBehaviour
                 audioSource = gameObject.AddComponent<AudioSource>();
             }
             if (sfxGroup != null) audioSource.outputAudioMixerGroup = sfxGroup;
+
+            if (typingAudioSource == null)
+            {
+                typingAudioSource = gameObject.AddComponent<AudioSource>();
+            }
+            typingAudioSource.loop = true;
+            if (sfxGroup != null) typingAudioSource.outputAudioMixerGroup = sfxGroup;
 
             if (bgmSource == null)
             {
@@ -241,6 +251,11 @@ public class DialogueManager : MonoBehaviour
     // 绑定至：UI上的【下一句/跳过】按钮
     public void OnNextButtonClicked()
     {
+        if (continueButtonSfx != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(continueButtonSfx);
+        }
+
         ManualUserClick();
     }
 
@@ -675,6 +690,8 @@ public class DialogueManager : MonoBehaviour
 
         if (contentText != null)
         {
+            PlayTypingSfx();
+
             // 使用 maxVisibleCharacters 实现打字机效果，可完美支持富文本（标签不会被逐字显示）
             contentText.text = textContent;
             contentText.maxVisibleCharacters = 0;
@@ -688,6 +705,7 @@ public class DialogueManager : MonoBehaviour
                 if (skipTyping)
                 {
                     contentText.maxVisibleCharacters = totalVisibleCharacters;
+                    StopTypingSfx();
                     break;
                 }
 
@@ -696,6 +714,8 @@ public class DialogueManager : MonoBehaviour
                 // 真实等待时间 = 基础出字速度 / 速度倍率
                 yield return new WaitForSeconds(typeSpeed / currentSpeedMultiplier);
             }
+
+            StopTypingSfx();
         }
 
         currentState = DialogueState.Waiting;
@@ -704,6 +724,28 @@ public class DialogueManager : MonoBehaviour
         if (isAutoPlaying)
         {
             StartCoroutine(AutoPlayWaitSequence());
+        }
+    }
+
+    private void PlayTypingSfx()
+    {
+        if (typingSfx == null || typingAudioSource == null)
+        {
+            return;
+        }
+
+        typingAudioSource.clip = typingSfx;
+        if (!typingAudioSource.isPlaying)
+        {
+            typingAudioSource.Play();
+        }
+    }
+
+    private void StopTypingSfx()
+    {
+        if (typingAudioSource != null && typingAudioSource.isPlaying)
+        {
+            typingAudioSource.Stop();
         }
     }
 

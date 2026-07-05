@@ -1170,3 +1170,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   confirmationPanel: {fileID: 5951133491380053855}
+  uiClickSfx: {fileID: 8300000, guid: 71c7a358061c0e44887eaf5bc15b6bbf, type: 3}

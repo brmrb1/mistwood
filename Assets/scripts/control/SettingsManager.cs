@@ -10,6 +10,9 @@ public class SettingsManager : MonoBehaviour
     public Slider characterSFXSlider;
     public Slider sfxSlider;
 
+    [Header("UI点击音效")]
+    public AudioClip uiClickSfx;
+
     [Header("显示与语言设置")]
     // 若你用的是TextMeshPro的下拉框，把这里的 Dropdown 改成 TMPro.TMP_Dropdown
     public TMPro.TMP_Dropdown screenModeDropdown; 
@@ -60,6 +63,8 @@ public class SettingsManager : MonoBehaviour
     // 绑定至 重置按钮 的 OnClick 事件
     public void ResetSettings()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         // 将声音UI恢复到最大值 1 
         if (bgmSlider != null)
         {
@@ -95,6 +100,8 @@ public class SettingsManager : MonoBehaviour
     // 切换面板的显示/隐藏状态（点击打开，再点击关闭）
     public void TogglePanel(GameObject panel)
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         if (panel != null)
         {
             panel.SetActive(!panel.activeSelf);

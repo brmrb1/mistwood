@@ -20,6 +20,9 @@ public class CameraMoveButton : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public Sprite upSprite; // 此时镜头在上方，表示"向下"或处于第二状态的图片
     public Sprite downSprite; // 此时镜头在下方，表示"向上"或初始状态的图片
 
+    [Header("UI点击音效")]
+    public AudioClip uiClickSfx;
+
     [Header("悬停放大设置")]
     public float hoverScaleMultiplier = 1.1f; // 缩放倍数
     private Vector3 originalButtonScale;
@@ -61,6 +64,8 @@ public class CameraMoveButton : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnButtonClick()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         isUp = !isUp;
 
         // 切换显示的图片

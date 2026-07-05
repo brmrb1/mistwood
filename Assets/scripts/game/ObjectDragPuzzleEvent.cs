@@ -37,6 +37,9 @@ public class ObjectDragPuzzleEvent : MonoBehaviour
     [Tooltip("判定成功的距离阈值")]
     public float successThreshold = 1.0f;
 
+    [Header("音效")]
+    public AudioClip interactSfx;
+
     private bool isMonitoring = false;
     private bool hasFinished = false;
     private bool wasInRange = false;
@@ -46,6 +49,7 @@ public class ObjectDragPuzzleEvent : MonoBehaviour
     /// </summary>
     public void StartInteraction()
     {
+        PlayInteractSfx();
         Debug.Log($"[ObjectDragPuzzleEvent] 事件已开始: {gameObject.name}");
         
         isMonitoring = true;
@@ -109,6 +113,7 @@ public class ObjectDragPuzzleEvent : MonoBehaviour
 
     private void FinishEvent()
     {
+        PlayInteractSfx();
         hasFinished = true;
         isMonitoring = false;
 
@@ -149,6 +154,13 @@ public class ObjectDragPuzzleEvent : MonoBehaviour
              // 延迟一帧恢复以防点击冲突（参考 CommonInteractEvent 做法）
             StartCoroutine(ResumeDialogueRoutine());
         }
+    }
+
+    private void PlayInteractSfx()
+    {
+        if (interactSfx == null) return;
+        Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(interactSfx, playPosition);
     }
 
     private IEnumerator ResumeDialogueRoutine()

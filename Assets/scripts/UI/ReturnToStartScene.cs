@@ -6,11 +6,16 @@ public class ReturnToStartScene : MonoBehaviour
     [Header("确认返回主界面的面板")]
     public GameObject confirmationPanel;
 
+    [Header("UI点击音效")]
+    public AudioClip uiClickSfx;
+
     /// <summary>
     /// 点击返回主界面按钮时调用，用于弹出确认界面
     /// </summary>
     public void GoToStartScene()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         if (confirmationPanel != null)
         {
             confirmationPanel.SetActive(true);
@@ -27,6 +32,8 @@ public class ReturnToStartScene : MonoBehaviour
     /// </summary>
     public void ConfirmReturn()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         SceneManager.LoadScene("start");
     }
 
@@ -35,6 +42,8 @@ public class ReturnToStartScene : MonoBehaviour
     /// </summary>
     public void CancelReturn()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         if (confirmationPanel != null)
         {
             confirmationPanel.SetActive(false);

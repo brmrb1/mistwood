@@ -8,9 +8,13 @@ public class LetterEvent : MonoBehaviour
     public GameObject itemImage2; // 第二张图片（信件内容）
     public GameObject closeButton; // 关闭按钮
 
+    [Header("音效")]
+    public AudioClip interactSfx;
+
     // 对话系统用 SendMessage 自动调用的口子
     public void StartInteraction()
     {
+        PlayInteractSfx();
         Debug.Log("【LetterEvent】成功接收到唤醒指令！信件事件正式开始！");
 
         gameObject.SetActive(true); // 显示整体事件面板
@@ -30,6 +34,7 @@ public class LetterEvent : MonoBehaviour
     // 玩家点击了第一张图片（你需要给图1加个Button组件并绑定这个方法）
     public void OnClickItem1()
     {
+        PlayInteractSfx();
         itemImage1.SetActive(false); // 隐藏图1
         itemImage2.SetActive(true);  // 显示图2
         closeButton.SetActive(true); // 显示关闭按钮
@@ -38,6 +43,7 @@ public class LetterEvent : MonoBehaviour
     // 玩家点击关闭按钮
     public void OnClickCloseButton()
     {
+        PlayInteractSfx();
         gameObject.SetActive(false); // 隐藏整个信件面板
 
         // 告诉对话系统：事件结束，恢复对话！
@@ -45,5 +51,12 @@ public class LetterEvent : MonoBehaviour
         {
             DialogueManager.Instance.ResumeFromSuspended();
         }
+    }
+
+    private void PlayInteractSfx()
+    {
+        if (interactSfx == null) return;
+        Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(interactSfx, playPosition);
     }
 }

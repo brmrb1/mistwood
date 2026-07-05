@@ -14,6 +14,9 @@ public class SaveManager : MonoBehaviour
     public GameObject hasSavePromptPanel; // 面板带有: 读取、覆盖、取消
     public GameObject noSavePromptPanel;  // 面板带有: 是、否
 
+    [Header("UI点击音效")]
+    public AudioClip uiClickSfx;
+
     private int currentSelectedSlot = -1;
     private TMPro.TMP_Text currentSelectedTextComp = null;
 
@@ -22,6 +25,8 @@ public class SaveManager : MonoBehaviour
     // 绑定至 打开存档界面的按钮
     public void OpenSavePanel()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         if (savePanel != null)
         {
             savePanel.SetActive(!savePanel.activeSelf);
@@ -79,6 +84,8 @@ public class SaveManager : MonoBehaviour
     // 点击某个存档位的逻辑
     private void OnSaveSlotClicked(int slotIndex, TMPro.TMP_Text textComp)
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         Debug.Log("点击了存档按钮: " + slotIndex); // 打印日志以确认按钮确实被点击了
 
         currentSelectedSlot = slotIndex;
@@ -114,6 +121,8 @@ public class SaveManager : MonoBehaviour
 
     public void ConfirmLoadGame()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         Debug.Log("进入了 ConfirmLoadGame 方法");
         if (currentSelectedSlot == -1) 
         {
@@ -155,6 +164,8 @@ public class SaveManager : MonoBehaviour
 
     public void ConfirmOverwriteGame()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         Debug.Log("进入了 ConfirmOverwriteGame 方法");
         if (currentSelectedSlot == -1) 
         {
@@ -168,6 +179,8 @@ public class SaveManager : MonoBehaviour
 
     public void DeleteSelectedSave()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         Debug.Log("进入了 DeleteSelectedSave 方法");
         if (currentSelectedSlot == -1) 
         {

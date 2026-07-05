@@ -4,6 +4,9 @@ using UnityEngine.Events;
 // 通用交互事件处理器（可挂载在任何需要点击、查看后恢复剧情的物体上）
 public class CommonInteractEvent : MonoBehaviour
 {
+    [Header("音效")]
+    public AudioClip interactSfx;
+
     [Header("额外事件(可选)")]
     [Tooltip("例如你想在关掉界面时同时放个音效，可以在这里点+号拖个AudioSource进来")]
     public UnityEvent onInteractFinished;
@@ -11,12 +14,14 @@ public class CommonInteractEvent : MonoBehaviour
     // 对话系统通过 SendMessage 自动寻找并调用的起始方法
     public void StartInteraction()
     {
+        PlayInteractSfx();
         gameObject.SetActive(true); // 显示该物体的交互面板
     }
 
     // 玩家完成交互（例如点击调查、点右上角叉叉关闭等），请将 UI Button 的 OnClick() 绑定到这个方法上
     public void FinishInteraction()
     {
+        PlayInteractSfx();
         Debug.Log($"【{gameObject.name}交互事件】玩家点击了完成/关闭，面板隐藏，准备恢复剧情...");
         
         // 隐藏自身
@@ -30,6 +35,13 @@ public class CommonInteractEvent : MonoBehaviour
         {
             DialogueManager.Instance.StartCoroutine(ResumeDialogueRoutine());
         }
+    }
+
+    private void PlayInteractSfx()
+    {
+        if (interactSfx == null) return;
+        Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(interactSfx, playPosition);
     }
 
     private System.Collections.IEnumerator ResumeDialogueRoutine()

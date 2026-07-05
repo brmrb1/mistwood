@@ -1653,6 +1653,7 @@ MonoBehaviour:
   maxSaveSlots: 10
   hasSavePromptPanel: {fileID: 8552284851328256598}
   noSavePromptPanel: {fileID: 4755196396032191406}
+  uiClickSfx: {fileID: 8300000, guid: 71c7a358061c0e44887eaf5bc15b6bbf, type: 3}
 --- !u!1 &5292697482033505020
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,6 +17,9 @@ public class ImagePageController : MonoBehaviour
     [Header("Return Button")]
     public Button returnButton;
 
+    [Header("UI点击音效")]
+    public AudioClip uiClickSfx;
+
     private bool isBound;
     private int currentIndex;
 
@@ -35,6 +38,8 @@ public class ImagePageController : MonoBehaviour
 
     public void OpenPage()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         BindUI();
 
         if (pageRoot != null)
@@ -47,6 +52,8 @@ public class ImagePageController : MonoBehaviour
 
     public void ClosePage()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         if (pageRoot != null)
         {
             pageRoot.SetActive(false);
@@ -55,6 +62,8 @@ public class ImagePageController : MonoBehaviour
 
     public void TogglePage()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         BindUI();
 
         if (pageRoot == null)
@@ -72,6 +81,8 @@ public class ImagePageController : MonoBehaviour
 
     public void PreviousImage()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         if (pages.Count == 0)
         {
             return;
@@ -88,6 +99,8 @@ public class ImagePageController : MonoBehaviour
 
     public void NextImage()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         if (pages.Count == 0)
         {
             return;

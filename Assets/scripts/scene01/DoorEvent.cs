@@ -3,15 +3,20 @@ using UnityEngine;
 // 门交互事件
 public class DoorEvent : MonoBehaviour
 {
+    [Header("音效")]
+    public AudioClip interactSfx;
+
     // 对话系统用 SendMessage 自动调用的口子
     public void StartInteraction()
     {
+        PlayInteractSfx();
         gameObject.SetActive(true); // 显示这扇门的互动面板
     }
 
     // 玩家点击了指定位置（比如在这个位置放一个透明的 Button，绑定这个方法）
     public void OnClickSpecificArea()
     {
+        PlayInteractSfx();
         Debug.Log("【DoorEvent】玩家点击了指定区域，门事件面板即将隐藏，恢复对话...");
         
         gameObject.SetActive(false); // 隐藏互动面板本身
@@ -21,5 +26,12 @@ public class DoorEvent : MonoBehaviour
         {
             DialogueManager.Instance.ResumeFromSuspended();
         }
+    }
+
+    private void PlayInteractSfx()
+    {
+        if (interactSfx == null) return;
+        Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(interactSfx, playPosition);
     }
 }

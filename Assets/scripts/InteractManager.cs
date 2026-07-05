@@ -10,6 +10,9 @@ public class InteractManager : MonoBehaviour
     public GameObject interactUI; // 你的整个交互面板容器（比如一个全屏背景+一些道具按钮）
     public Text interactTitleText; // 临时用来显示当前在玩什么交互（测试用）
 
+    [Header("音效")]
+    public AudioClip interactSfx;
+
     private void Awake()
     {
         if (Instance == null)
@@ -27,6 +30,7 @@ public class InteractManager : MonoBehaviour
     // 从 DialogueManager 接收到事件时开启交互界面
     public void StartInteraction(string interactName)
     {
+        PlayInteractSfx();
         Debug.Log("开始交互玩法：" + interactName);
 
         // 1. 打开交互专属的UI面板
@@ -47,6 +51,7 @@ public class InteractManager : MonoBehaviour
     // 交互完成（比如拼图成功，或者玩家点击了“退出调查”按钮）
     public void FinishInteraction()
     {
+        PlayInteractSfx();
         Debug.Log("交互结束，恢复对话！");
 
         // 1. 关闭交互UI
@@ -57,5 +62,12 @@ public class InteractManager : MonoBehaviour
 
         // 2. 告诉对话系统：继续往下播剧情！
         DialogueManager.Instance.ResumeFromSuspended();
+    }
+
+    private void PlayInteractSfx()
+    {
+        if (interactSfx == null) return;
+        Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(interactSfx, playPosition);
     }
 }

@@ -9,6 +9,9 @@ public class PromptEvent : MonoBehaviour
     [Header("配置")]
     public TextAsset promptCSV;     // 这个事件专门的CSV文件
     public TMP_Text promptText;     // 显示提示文字的文本容器 (TextMeshPro)
+
+    [Header("音效")]
+    public AudioClip interactSfx;
     
     private List<string> linesData = new List<string>();
     private int currentIndex = 0;
@@ -17,6 +20,7 @@ public class PromptEvent : MonoBehaviour
     // 被对话管理器自动呼叫的启动入口
     public void StartInteraction()
     {
+        PlayInteractSfx();
         Debug.Log("【PromptEvent】多段提示事件开始！");
         gameObject.SetActive(true);
         enableTime = Time.time;
@@ -67,6 +71,7 @@ public class PromptEvent : MonoBehaviour
         // 增加0.1秒的CD缓冲期，防止由于同帧/短时间内的连点导致新出来的面板被瞬间穿透点掉
         if (gameObject.activeInHierarchy && Input.GetMouseButtonDown(0) && Time.time - enableTime > 0.1f)
         {
+            PlayInteractSfx();
             // 延迟一点点防止点出来的瞬间就被当成点屏幕了
             currentIndex++;
             ShowNextLine();
@@ -103,6 +108,13 @@ public class PromptEvent : MonoBehaviour
         {
             DialogueManager.Instance.StartCoroutine(ResumeDialogueRoutine());
         }
+    }
+
+    private void PlayInteractSfx()
+    {
+        if (interactSfx == null) return;
+        Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(interactSfx, playPosition);
     }
 
     // 延迟一帧恢复对话，防止当前帧的点击继续传导给下一个刚出现的物体

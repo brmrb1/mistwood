@@ -9,6 +9,9 @@ public class TaskSystem : MonoBehaviour
     [Header("配置")]
     public TextAsset taskCSV;               // 任务系统的CSV文件
 
+    [Header("UI点击音效")]
+    public AudioClip uiClickSfx;
+
     [Header("弹窗提示UI (看完消失)")]
     public GameObject popupPanel;         // 画面中间的弹窗底图
     public TMP_Text popupText;              // 弹窗里显示的提示文字
@@ -103,6 +106,8 @@ public class TaskSystem : MonoBehaviour
     // 当玩家点击屏幕 / 或者你绑定到弹窗中间的“确定按钮”上
     public void OnClickPopupComplete()
     {
+        UIAudioHelper.PlayClickSfx(uiClickSfx, transform);
+
         // 1. 关闭中间的弹窗
         if (popupPanel != null) popupPanel.SetActive(false);
         

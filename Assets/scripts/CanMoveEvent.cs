@@ -10,6 +10,9 @@ public class CanMoveEvent : MonoBehaviour
     [Tooltip("下移的距离 (单位)，根据需要可以设为 8")]
     public float moveDistance = 8f;
 
+    [Header("音效")]
+    public AudioClip interactSfx;
+
     private bool hasMoved = false;
     public bool HasMoved => hasMoved;
 
@@ -59,6 +62,7 @@ public class CanMoveEvent : MonoBehaviour
     // 当满足 csv6 触发条件时或由 DialogueManager 调用
     public void StartInteraction()
     {
+        PlayInteractSfx();
         // 如果没有在面板上指定，尝试在场景中自动寻找
         if (canMoveObject == null)
         {
@@ -88,6 +92,13 @@ public class CanMoveEvent : MonoBehaviour
         {
             DialogueManager.Instance.StartCoroutine(ResumeDialogueRoutine());
         }
+    }
+
+    private void PlayInteractSfx()
+    {
+        if (interactSfx == null) return;
+        Vector3 playPosition = Camera.main != null ? Camera.main.transform.position : transform.position;
+        AudioSource.PlayClipAtPoint(interactSfx, playPosition);
     }
 
     private System.Collections.IEnumerator ResumeDialogueRoutine()

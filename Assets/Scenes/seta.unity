@@ -351,6 +351,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactUI: {fileID: 243054892}
   interactTitleText: {fileID: 0}
+  interactSfx: {fileID: 0}
 --- !u!114 &243054895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -744,6 +745,7 @@ MonoBehaviour:
   itemImage1: {fileID: 1596770778}
   itemImage2: {fileID: 1062002618}
   closeButton: {fileID: 1846321584}
+  interactSfx: {fileID: 0}
 --- !u!4 &411832355
 Transform:
   m_ObjectHideFlags: 0
@@ -911,7 +913,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2405521634418429068, guid: 255e86bfd7016e449aab33e08fb61478, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -1023
+      value: -1005
       objectReference: {fileID: 0}
     - target: {fileID: 2405521634418429068, guid: 255e86bfd7016e449aab33e08fb61478, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1486,6 +1488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79b148af2ed1a9143ab5db1475a80ccf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactSfx: {fileID: 0}
   onInteractFinished:
     m_PersistentCalls:
       m_Calls: []
@@ -1684,6 +1687,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef045c0810cc9f84e8874d95a7a43564, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactSfx: {fileID: 0}
 --- !u!1 &1596770778
 GameObject:
   m_ObjectHideFlags: 0
@@ -2168,6 +2172,7 @@ MonoBehaviour:
   itemImage1: {fileID: 1903248714}
   itemImage2: {fileID: 1609690562}
   closeButton: {fileID: 382086064}
+  interactSfx: {fileID: 0}
 --- !u!1 &1846321584
 GameObject:
   m_ObjectHideFlags: 0
@@ -2751,6 +2756,18 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1233444986}
+    - target: {fileID: 5580138196851360096, guid: 0bccb9dad502ff948b442d22edadf6d9, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 61
+      objectReference: {fileID: 0}
+    - target: {fileID: 5580138196851360096, guid: 0bccb9dad502ff948b442d22edadf6d9, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 2.4686
+      objectReference: {fileID: 0}
+    - target: {fileID: 8395400791761846120, guid: 0bccb9dad502ff948b442d22edadf6d9, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 154
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
